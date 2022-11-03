@@ -2,9 +2,9 @@
 ### Dashboards ###
 ##################
 
-# Raw dashboard - Kubernetes Bundle
-resource "newrelic_one_dashboard_raw" "kubernetes_bundle" {
-  name = "Kubernetes Monitoring with Bundle"
+# Raw dashboard - Kubernetes Cluster Overview
+resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
+  name = "K8s ${var.cluster_name} - Cluster Overview"
 
   #####################
   ### NODE OVERVIEW ###
