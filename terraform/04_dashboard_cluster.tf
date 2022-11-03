@@ -549,7 +549,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Running' FACET namespace LIMIT MAX"
+            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Running' LIMIT MAX"
           }
         ]
       })
@@ -568,7 +568,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' FACET namespace LIMIT MAX"
+            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' LIMIT MAX"
           }
         ]
       })
@@ -587,7 +587,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' FACET namespace LIMIT MAX"
+            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' LIMIT MAX"
           }
         ]
       })
@@ -606,7 +606,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' FACET namespace LIMIT MAX"
+            "query": "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' LIMIT MAX"
           }
         ]
       })
