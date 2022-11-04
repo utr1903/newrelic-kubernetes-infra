@@ -5,7 +5,7 @@
 # Raw dashboard - Kubernetes Namespace Overview
 resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
   count = length(var.namespace_names)
-  name = "K8s ${var.cluster_name} - Namespace Overview (${var.namespace_names[count.index]})"
+  name = "K8s Cluster ${var.cluster_name} | Namespace (${var.namespace_names[count.index]})"
 
   ##########################
   ### NAMESPACE OVERVIEW ###
@@ -271,31 +271,6 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
           }
         ]
       })
-    }
-  }
-
-  ###########################
-  ### DEPLOYMENT OVERVIEW ###
-  ###########################
-  dynamic "page" {
-    for_each = var.deployments[index(var.deployments.*.namespaceName, var.namespace_names[count.index])].deploymentNames
-
-    content {
-      name = "Deployment - ${page.value}"
-
-      # Page Description
-      widget {
-        title  = "Page Description"
-        row    = 1
-        column = 1
-        height = 2
-        width  = 4
-        visualization_id = "viz.markdown"
-        configuration = jsonencode(
-        {
-          "text": "## Deployment Overview\nNamespace -> ${var.namespace_names[count.index]}\nDeployment -> ${page.value}."
-        })
-      }
     }
   }
 }

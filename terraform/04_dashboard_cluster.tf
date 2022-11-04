@@ -4,7 +4,7 @@
 
 # Raw dashboard - Kubernetes Cluster Overview
 resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
-  name = "K8s ${var.cluster_name} - Cluster Overview"
+  name = "K8s Cluster ${var.cluster_name}"
 
   #####################
   ### NODE OVERVIEW ###
