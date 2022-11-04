@@ -92,6 +92,6 @@ else
   -var NEW_RELIC_REGION="eu" \
   -var cluster_name=$clusterName \
   -var namespace_names=$namespaces \
-  -var deployments=$deployments \
+  -var deployments=$deployments
 fi
 #########
