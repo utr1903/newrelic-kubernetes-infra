@@ -29,3 +29,11 @@ variable "cluster_name" {
 variable "namespace_names" {
   type = list(string)
 }
+
+# Deployments
+variable "deployments" {
+  type = list(object({
+    namespaceName = string
+    deploymentNames = list(string)
+  }))
+}

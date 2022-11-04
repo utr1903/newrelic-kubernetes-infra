@@ -7,11 +7,11 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
   count = length(var.namespace_names)
   name = "K8s ${var.cluster_name} - Namespace Overview (${var.namespace_names[count.index]})"
 
-  ####################
-  ### POD OVERVIEW ###
-  ####################
+  ##########################
+  ### NAMESPACE OVERVIEW ###
+  ##########################
   page {
-    name = "Pod Overview"
+    name = "Namespace Overview"
 
     # Page Description
     widget {
@@ -23,7 +23,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
       visualization_id = "viz.markdown"
       configuration = jsonencode(
       {
-        "text": "## Pod Overview\nThis page corresponds to the namespace ${var.namespace_names[count.index]} within the cluster ${var.cluster_name}."
+        "text": "## Namespace Overview\nThis page corresponds to the namespace ${var.namespace_names[count.index]} within the cluster ${var.cluster_name}."
       })
     }
 
@@ -271,6 +271,31 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
           }
         ]
       })
+    }
+  }
+
+  ###########################
+  ### DEPLOYMENT OVERVIEW ###
+  ###########################
+  dynamic "page" {
+    for_each = var.deployments[index(var.deployments.*.namespaceName, var.namespace_names[count.index])].deploymentNames
+
+    content {
+      name = "Deployment - ${page.value}"
+
+      # Page Description
+      widget {
+        title  = "Page Description"
+        row    = 1
+        column = 1
+        height = 2
+        width  = 4
+        visualization_id = "viz.markdown"
+        configuration = jsonencode(
+        {
+          "text": "## Deployment Overview\nNamespace -> ${var.namespace_names[count.index]}\nDeployment -> ${page.value}."
+        })
+      }
     }
   }
 }
