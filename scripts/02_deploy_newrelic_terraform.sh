@@ -23,7 +23,7 @@ done
 clusterName="mydopecluster"
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sPodSample SELECT uniques(namespaceName) AS `namespaces` SINCE 1 day ago\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sPodSample SELECT uniques(namespaceName) AS `namespaces` WHERE clusterName = '"'$clusterName'"'\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
