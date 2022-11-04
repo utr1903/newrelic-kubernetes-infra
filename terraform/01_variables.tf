@@ -24,3 +24,8 @@ variable "NEW_RELIC_REGION" {
 variable "cluster_name" {
   type = string
 }
+
+# Namespace Names
+variable "namespace_names" {
+  type = list(string)
+}
