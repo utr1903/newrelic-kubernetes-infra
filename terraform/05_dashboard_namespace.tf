@@ -248,7 +248,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM (FROM Metric SELECT average(k8s.container.fsUsedBytes) AS `mem` WHERE k8s.clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET k8s.podName TIMESERIES LIMIT MAX) SELECT sum(mem) FACET podName TIMESERIES"
+            "query": "FROM (FROM Metric SELECT average(k8s.container.fsUsedBytes) AS `sto` WHERE k8s.clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET k8s.podName TIMESERIES LIMIT MAX) SELECT sum(sto) FACET podName TIMESERIES"
           }
         ]
       })
