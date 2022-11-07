@@ -45,3 +45,11 @@ variable "daemonsets" {
     daemonsetNames = list(string)
   }))
 }
+
+# Statefulsets
+variable "statefulsets" {
+  type = list(object({
+    namespaceName = string
+    statefulsetNames = list(string)
+  }))
+}
