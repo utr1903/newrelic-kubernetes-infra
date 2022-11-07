@@ -37,3 +37,11 @@ variable "deployments" {
     deploymentNames = list(string)
   }))
 }
+
+# Daemonsets
+variable "daemonsets" {
+  type = list(object({
+    namespaceName = string
+    daemonsetNames = list(string)
+  }))
+}

@@ -60,6 +60,25 @@ deployments=$(curl https://api.eu.newrelic.com/graphql \
   | tr -d '\n' | tr -d ' ')
 #########
 
+##################
+### DAEMONSETS ###
+##################
+
+# Set NerdGraph query
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonsetNames` WHERE clusterName = '"'$clusterName'"' FACET namespaceName LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+
+# Clear the additional spaces
+query=$(echo $query | sed 's/    /  /g')
+
+# Query and format the namespaces
+daemonsets=$(curl https://api.eu.newrelic.com/graphql \
+  -H "Content-Type: application/json" \
+  -H "API-Key: $NEWRELIC_API_KEY" \
+  --data-binary "$query" \
+  | jq -r '.data.actor.nrql.results' \
+  | tr -d '\n' | tr -d ' ')
+#########
+
 #################
 ### TERRAFORM ###
 #################
@@ -77,6 +96,7 @@ if [[ $flagDestroy != "true" ]]; then
     -var cluster_name=$clusterName \
     -var namespace_names=$namespaces \
     -var deployments=$deployments \
+    -var daemonsets=$daemonsets \
     -out "./tfplan"
 
   # Apply Terraform
@@ -92,6 +112,7 @@ else
   -var NEW_RELIC_REGION="eu" \
   -var cluster_name=$clusterName \
   -var namespace_names=$namespaces \
-  -var deployments=$deployments
+  -var deployments=$deployments \
+  -var daemonsets=$daemonsets
 fi
 #########
