@@ -4,14 +4,14 @@
 
 # Raw dashboard - Kubernetes Daemonset Overview
 resource "newrelic_one_dashboard_raw" "kubernetes_daemonset_overview" {
-  count = length(var.namespace_names)
-  name = "K8s Cluster ${var.cluster_name} | Namespace (${var.namespace_names[count.index]}) | Daemonsets"
+  count = length(var.daemonsets)
+  name = "K8s Cluster ${var.cluster_name} | Namespace (${var.daemonsets[count.index].namespaceName}) | Daemonsets"
 
   ##########################
   ### DAEMONSET OVERVIEW ###
   ##########################
   dynamic "page" {
-    for_each = var.daemonsets[index(var.daemonsets.*.namespaceName, var.namespace_names[count.index])].daemonsetNames
+    for_each = var.daemonsets[count.index].daemonsetNames
 
     content {
       name = "${page.value}"
@@ -26,7 +26,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_daemonset_overview" {
         visualization_id = "viz.markdown"
         configuration = jsonencode(
         {
-          "text": "## Daemonset Overview\nNamespace -> ${var.namespace_names[count.index]}\nDaemonset -> ${page.value}."
+          "text": "## Daemonset Overview\nNamespace -> ${var.daemonsets[count.index].namespaceName}\nDaemonset -> ${page.value}."
         })
       }
 
