@@ -5,7 +5,7 @@
 # Alert condition - MEM
 resource "newrelic_nrql_alert_condition" "kubernetes_deployment_mem_utilization" {
   count      = length(local.alerts_deployment_names)
-  name       = "Deployment (${local.alerts_deployment_names[count.index]}"
+  name       = "Deployment (${local.alerts_deployment_names[count.index]})"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   policy_id  = newrelic_alert_policy.kubernetes_deployment.id
 
