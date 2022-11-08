@@ -23,7 +23,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_mem_utilization" {
   slide_by                       = 30
 
   nrql {
-    query = "FROM Metric SELECT average(k8s.node.memoryUsedBytes)/max(k8s.node.capacityMemoryBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET k8s.nodeName"
+    query = "FROM K8sNodeSample SELECT max(memoryUsedBytes)/max(capacityMemoryBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName"
   }
 
   warning {
@@ -48,6 +48,11 @@ resource "newrelic_entity_tags" "kubernetes_node_mem_utilization" {
   tag {
     key    = "k8sClusterName"
     values = ["${var.cluster_name}"]
+  }
+
+  tag {
+    key    = "k8sObjectType"
+    values = ["node"]
   }
 
   tag {
