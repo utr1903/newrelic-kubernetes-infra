@@ -195,7 +195,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND cpuLimitCores IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+              "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
@@ -233,7 +233,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,            
-              "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND memoryLimitBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+              "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
@@ -271,7 +271,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND fsCapacityBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+              "query": "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
