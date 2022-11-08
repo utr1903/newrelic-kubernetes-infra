@@ -16,9 +16,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
     content {
       name = "${page.value}"
 
-      # Page Description
+      # Page description
       widget {
-        title  = "Page Description"
+        title  = "Page description"
         row    = 1
         column = 1
         height = 2
@@ -163,27 +163,28 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Container CPU Usage per Pod (mcores)
+      # Top 10 CPU using pods (mcores)
       widget {
-        title  = "Container CPU Usage per Pod (mcores)"
+        title  = "Top 10 CPU using pods (mcores)"
         row    = 5
         column = 1
         width  = 6
+        height = 3
         visualization_id = "viz.area"
         configuration = jsonencode(
         {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.cpuUsedCores)*1000 AS `cpu` WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') FACET k8s.podName TIMESERIES LIMIT MAX"
+              "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET podName LIMIT 10"
             }
           ]
         })
       }
 
-      # Container CPU Utilization per Pod (%)
+      # Top 10 CPU utilizing pods (%)
       widget {
-        title  = "Container CPU Utilization per Pod (%)"
+        title  = "Top 10 CPU utilizing pods (%)"
         row    = 5
         column = 7
         width  = 6
@@ -194,15 +195,15 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.cpuUsedCores)/average(k8s.container.cpuLimitCores)*100 WHERE k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') AND k8s.containerName IN (FROM Metric SELECT uniques(k8s.containerName) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.container.cpuLimitCores IS NOT NULL LIMIT MAX) FACET k8s.podName TIMESERIES LIMIT MAX"
+              "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND cpuLimitCores IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
       }
 
-      # Container MEM Usage per Pod (bytes)
+      # Top 10 MEM using pods (bytes)
       widget {
-        title  = "Container MEM Usage per Pod (bytes)"
+        title  = "Top 10 MEM using pods (bytes)"
         row    = 8
         column = 1
         width  = 6
@@ -213,15 +214,15 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.memoryUsedBytes) AS `mem` WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') FACET k8s.podName TIMESERIES LIMIT MAX"
+              "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes)*1000 AS `mem` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
             }
           ]
         })
       }
 
-      # Container MEM Utilization per Pod (%)
+      # Top 10 MEM utilizing pods (%)
       widget {
-        title  = "Container MEM Utilization per Pod (%)"
+        title  = "Top 10 MEM utilizing pods (%)"
         row    = 8
         column = 7
         width  = 6
@@ -231,8 +232,8 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         {
           "nrqlQueries": [
             {
-              "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.memoryUsedBytes)/average(k8s.container.memoryLimitBytes)*100 WHERE k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') AND k8s.containerName IN (FROM Metric SELECT uniques(k8s.containerName) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.container.memoryLimitBytes IS NOT NULL LIMIT MAX) FACET k8s.podName TIMESERIES LIMIT MAX"
+              "accountId": var.NEW_RELIC_ACCOUNT_ID,            
+              "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND memoryLimitBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
@@ -251,7 +252,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.fsUsedBytes) AS `sto` WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') FACET k8s.podName TIMESERIES LIMIT MAX"
+              "query": "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes)*1000 AS `sto` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
             }
           ]
         })
@@ -270,7 +271,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries": [
             {
               "accountId": var.NEW_RELIC_ACCOUNT_ID,
-              "query": "FROM Metric SELECT average(k8s.container.fsUsedBytes)/average(k8s.container.fsCapacityBytes)*100 WHERE k8s.podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE deploymentName = '${page.value}') AND k8s.containerName IN (FROM Metric SELECT uniques(k8s.containerName) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.container.fsCapacityBytes IS NOT NULL LIMIT MAX) FACET k8s.podName TIMESERIES LIMIT MAX"
+              "query": "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${page.value}' AND fsCapacityBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
             }
           ]
         })
