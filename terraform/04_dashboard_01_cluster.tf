@@ -250,9 +250,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Deployments in Namespaces
+    # Deployments in namespaces
     widget {
-      title  = "Deployments in Namespaces"
+      title  = "Deployments in namespaces"
       row    = 1
       column = 7
       height = 2
@@ -269,9 +269,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # DaemonSets in Namespaces
+    # DaemonSets in namespaces
     widget {
-      title  = "DaemonSets in Namespaces"
+      title  = "DaemonSets in namespaces"
       row    = 1
       column = 9
       height = 2
@@ -288,9 +288,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # StatefulSets in Namespaces
+    # StatefulSets in namespaces
     widget {
-      title  = "StatefulSets in Namespaces"
+      title  = "StatefulSets in namespaces"
       row    = 1
       column = 11
       height = 2
@@ -307,9 +307,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Pods in Namespaces (Running)
+    # Pods in namespaces (Running)
     widget {
-      title  = "Pods in Namespaces (Running)"
+      title  = "Pods in namespaces (Running)"
       row    = 3
       column = 1
       height = 3
@@ -326,9 +326,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Pods in Namespaces (Pending)
+    # Pods in namespaces (Pending)
     widget {
-      title  = "Pods in Namespaces (Pending)"
+      title  = "Pods in namespaces (Pending)"
       row    = 3
       column = 4
       height = 3
@@ -345,9 +345,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Pods in Namespaces (Failed)
+    # Pods in namespaces (Failed)
     widget {
-      title  = "Pods in Namespaces (Failed)"
+      title  = "Pods in namespaces (Failed)"
       row    = 3
       column = 7
       height = 3
@@ -364,9 +364,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Pods in Namespaces (Unknown)
+    # Pods in namespaces (Unknown)
     widget {
-      title  = "Pods in Namespaces (Unknown)"
+      title  = "Pods in namespaces (Unknown)"
       row    = 3
       column = 10
       height = 3
@@ -383,9 +383,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Container CPU Usage per Namespace (mcores)
+    # Top 10 CPU using namespaces (mcores)
     widget {
-      title  = "Container CPU Usage per Namespace (mcores)"
+      title  = "# Top 10 CPU using namespaces (mcores)"
       row    = 5
       column = 1
       width  = 6
@@ -395,15 +395,15 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM (FROM Metric SELECT average(k8s.container.cpuUsedCores)*1000 AS `cpu` WHERE k8s.clusterName = '${var.cluster_name}' FACET k8s.namespaceName, k8s.podName TIMESERIES LIMIT MAX) SELECT sum(cpu) FACET namespaceName TIMESERIES LIMIT MAX"
+            "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET namespaceName LIMIT 10"
           }
         ]
       })
     }
 
-    # Container CPU Utilization per Namespace (%)
+    # Top 10 CPU utilizing namespaces (%)
     widget {
-      title  = "Container CPU Utilization per Namespace (%)"
+      title  = "Top 10 CPU utilizing namespaces (%)"
       row    = 5
       column = 7
       width  = 6
@@ -414,15 +414,15 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM (FROM Metric SELECT average(k8s.container.cpuUsedCores) AS `usage`, average(k8s.container.cpuLimitCores) AS `limit` WHERE k8s.containerName IN (FROM Metric SELECT uniques(k8s.containerName) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.container.cpuLimitCores IS NOT NULL LIMIT MAX) FACET k8s.namespaceName, k8s.podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET namespaceName TIMESERIES LIMIT MAX"
+            "query": "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
           }
         ]
       })
     }
 
-    # Container MEM Usage per Namespace (bytes)
+    # Top 10 MEM using namespaces (%)
     widget {
-      title  = "Container MEM Usage per Namespace (bytes)"
+      title  = "Top 10 MEM using namespaces (%)"
       row    = 8
       column = 1
       width  = 6
@@ -433,15 +433,15 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM (FROM Metric SELECT average(k8s.container.memoryUsedBytes) AS `mem` WHERE k8s.clusterName = '${var.cluster_name}' FACET k8s.namespaceName, k8s.podName TIMESERIES LIMIT MAX) SELECT sum(mem) FACET namespaceName TIMESERIES LIMIT MAX"
+            "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET namespaceName LIMIT 10"
           }
         ]
       })
     }
 
-    # Container MEM Utilization per Namespace (%)
+    # Top 10 MEM utilizing namespaces (%)
     widget {
-      title  = "Container MEM Utilization per Namespace (%)"
+      title  = "Top 10 MEM utilizing namespaces (%)"
       row    = 8
       column = 7
       width  = 6
@@ -452,7 +452,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries": [
           {
             "accountId": var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM (FROM Metric SELECT average(k8s.container.memoryUsedBytes) AS `usage`, average(k8s.container.memoryLimitBytes) AS `limit` WHERE k8s.containerName IN (FROM Metric SELECT uniques(k8s.containerName) WHERE k8s.clusterName = '${var.cluster_name}' AND k8s.container.memoryLimitBytes IS NOT NULL LIMIT MAX) FACET k8s.namespaceName, k8s.podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET namespaceName TIMESERIES LIMIT MAX"
+            "query": "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
           }
         ]
       })
