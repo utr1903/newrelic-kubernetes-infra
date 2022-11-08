@@ -5,8 +5,8 @@ locals {
     [
       for namespace in var.deployments : [
         for deploymentName in namespace.deploymentNames :
-          deploymentName
-        ]
+        deploymentName
       ]
-    )
+    ]
+  )
 }

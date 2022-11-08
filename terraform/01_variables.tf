@@ -33,7 +33,7 @@ variable "namespace_names" {
 # Deployments
 variable "deployments" {
   type = list(object({
-    namespaceName = string
+    namespaceName   = string
     deploymentNames = list(string)
   }))
 }
@@ -41,7 +41,7 @@ variable "deployments" {
 # Daemonsets
 variable "daemonsets" {
   type = list(object({
-    namespaceName = string
+    namespaceName  = string
     daemonsetNames = list(string)
   }))
 }
@@ -49,7 +49,7 @@ variable "daemonsets" {
 # Statefulsets
 variable "statefulsets" {
   type = list(object({
-    namespaceName = string
+    namespaceName    = string
     statefulsetNames = list(string)
   }))
 }
