@@ -2,15 +2,15 @@
 ### Alert Condition ###
 #######################
 
-# Alert condition - CPU
-resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization" {
+# Alert condition - STO
+resource "newrelic_nrql_alert_condition" "kubernetes_deployment_sto_utilization" {
   count      = length(local.alerts_deployment_names)
   name       = "Deployment (${local.alerts_deployment_names[count.index]}"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   policy_id  = newrelic_alert_policy.kubernetes_deployment.id
 
   type        = "static"
-  description = "Alert when CPU utilization remains too high."
+  description = "Alert when STO utilization remains too high."
 
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
@@ -24,7 +24,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   slide_by                       = 30
 
   nrql {
-    query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${local.alerts_deployment_names[count.index]}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
+    query = "FROM K8sContainerSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${local.alerts_deployment_names[count.index]}' AND fsCapacityBytes IS NOT NULL FACET podName, containerName"
   }
 
   warning {
@@ -42,10 +42,10 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   }
 }
 
-# Alert condition tag - CPU
-resource "newrelic_entity_tags" "kubernetes_deployment_cpu_utilization" {
+# Alert condition tag - STO
+resource "newrelic_entity_tags" "kubernetes_deployment_sto_utilization" {
   count = length(local.alerts_deployment_names)
-  guid  = newrelic_nrql_alert_condition.kubernetes_deployment_cpu_utilization[count.index].entity_guid
+  guid  = newrelic_nrql_alert_condition.kubernetes_deployment_sto_utilization[count.index].entity_guid
 
   tag {
     key    = "k8sClusterName"
@@ -59,7 +59,7 @@ resource "newrelic_entity_tags" "kubernetes_deployment_cpu_utilization" {
 
   tag {
     key    = "alertProperty"
-    values = ["cpuUtilization"]
+    values = ["stoUtilization"]
   }
 
   tag {
