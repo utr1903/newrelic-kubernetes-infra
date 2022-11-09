@@ -1,11 +1,13 @@
 locals {
 
   # Alerts - List of deployments
-  alerts_deployment_names = flatten(
+  alerts_deployments = flatten(
     [
       for namespace in var.deployments : [
-        for deploymentName in namespace.deploymentNames :
-        deploymentName
+        for deploymentName in namespace.deploymentNames : {
+          namespaceName = namespace.namespaceName
+          deploymentName = deploymentName
+        }
       ]
     ]
   )

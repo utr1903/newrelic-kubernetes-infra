@@ -4,8 +4,8 @@
 
 # Alert condition - STO
 resource "newrelic_nrql_alert_condition" "kubernetes_deployment_sto_utilization" {
-  count      = length(local.alerts_deployment_names)
-  name       = "Deployment (${local.alerts_deployment_names[count.index]})"
+  count      = length(local.alerts_deployments)
+  name       = "Namespace (${local.alerts_deployments[count.index].namespaceName}) | Deployment (${local.alerts_deployments[count.index].deploymentName})"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   policy_id  = newrelic_alert_policy.kubernetes_deployment.id
 
@@ -24,7 +24,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_sto_utilization"
   slide_by                       = 30
 
   nrql {
-    query = "FROM K8sContainerSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' AND deploymentName = '${local.alerts_deployment_names[count.index]}' AND fsCapacityBytes IS NOT NULL FACET podName, containerName"
+    query = "FROM K8sContainerSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index].namespaceName}' AND deploymentName = '${local.alerts_deployments[count.index].deploymentName}' AND fsCapacityBytes IS NOT NULL FACET podName, containerName"
   }
 
   warning {
@@ -44,7 +44,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_sto_utilization"
 
 # Alert condition tag - STO
 resource "newrelic_entity_tags" "kubernetes_deployment_sto_utilization" {
-  count = length(local.alerts_deployment_names)
+  count = length(local.alerts_deployments)
   guid  = newrelic_nrql_alert_condition.kubernetes_deployment_sto_utilization[count.index].entity_guid
 
   tag {
@@ -58,12 +58,12 @@ resource "newrelic_entity_tags" "kubernetes_deployment_sto_utilization" {
   }
 
   tag {
-    key    = "alertProperty"
-    values = ["stoUtilization"]
+    key    = "namespaceName"
+    values = ["${local.alerts_deployments[count.index].namespaceName}"]
   }
 
   tag {
     key    = "deploymentName"
-    values = ["${local.alerts_deployment_names[count.index]}"]
+    values = ["${local.alerts_deployments[count.index].deploymentName}"]
   }
 }
