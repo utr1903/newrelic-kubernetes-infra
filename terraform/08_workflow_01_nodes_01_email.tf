@@ -2,7 +2,7 @@
 ### Workflow ###
 ################
 
-resource "newrelic_workflow" "kubernetes_nodes" {
+resource "newrelic_workflow" "kubernetes_nodes_email" {
   name       = "k8s-${var.cluster_name}-workflow-nodes"
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
