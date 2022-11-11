@@ -41,13 +41,11 @@ resource "newrelic_workflow" "kubernetes_email_namespaces" {
     predicate {
       attribute = "tag.namespaceName"
       operator  = "EXACTLY_MATCHES"
-      # values    = ["${local.test[count.index].namespace_name}"]
-      values    = ["${local.email_target_namespaces[count.index].namespace_name}"]
+      values = ["${local.email_target_namespaces[count.index].namespace_name}"]
     }
   }
 
   destination {
-    # channel_id = newrelic_notification_channel.email[local.test[count.index].target_name].id
     channel_id = newrelic_notification_channel.email[local.email_target_namespaces[count.index].target_name].id
   }
 }
