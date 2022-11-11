@@ -20,9 +20,8 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 4
       visualization_id = "viz.markdown"
-      configuration = jsonencode(
-        {
-          "text" : "## Node Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
+      configuration = jsonencode({
+        "text" : "## Node Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
       })
     }
 
@@ -34,14 +33,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 4
       visualization_id = "viz.table"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(capacityCpuCores) AS 'CPU (cores)', max(capacityMemoryBytes)/1024/1024/1024 AS 'MEM (GiB)' WHERE clusterName = '${var.cluster_name}' FACET nodeName"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(capacityCpuCores) AS 'CPU (cores)', max(capacityMemoryBytes)/1024/1024/1024 AS 'MEM (GiB)' WHERE clusterName = '${var.cluster_name}' FACET nodeName"
+          }
+        ]
       })
     }
 
@@ -53,14 +51,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 5
       width            = 4
       visualization_id = "viz.table"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniques(concat(nodeName, ' -> ', podName)) AS `Node -> Pod` WHERE clusterName = '${var.cluster_name}'"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniques(concat(nodeName, ' -> ', podName)) AS `Node -> Pod` WHERE clusterName = '${var.cluster_name}'"
+          }
+        ]
       })
     }
 
@@ -72,14 +69,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 4
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(namespaceName) WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(namespaceName) WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -91,14 +87,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 4
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -109,14 +104,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 1
       width            = 6
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(cpuUsedCores)*1000 AS `CPU (mcores)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(cpuUsedCores)*1000 AS `CPU (mcores)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -127,14 +121,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 7
       width            = 6
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(cpuUsedCores)/max(capacityCpuCores)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(cpuUsedCores)/max(capacityCpuCores)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -145,14 +138,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 1
       width            = 6
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(memoryUsedBytes) AS `MEM (bytes)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(memoryUsedBytes) AS `MEM (bytes)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -163,14 +155,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 7
       width            = 6
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(memoryUsedBytes)/max(capacityMemoryBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(memoryUsedBytes)/max(capacityMemoryBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -181,14 +172,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 1
       width            = 6
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(fsUsedBytes) AS `STO (bytes)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(fsUsedBytes) AS `STO (bytes)` WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -199,14 +189,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 7
       width            = 6
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNodeSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName TIMESERIES LIMIT MAX"
+          }
+        ]
       })
     }
   }
@@ -225,9 +214,8 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 4
       visualization_id = "viz.markdown"
-      configuration = jsonencode(
-        {
-          "text" : "## Namespace Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
+      configuration = jsonencode({
+        "text" : "## Namespace Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
       })
     }
 
@@ -239,14 +227,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.table"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sNamespaceSample SELECT uniques(namespaceName) WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNamespaceSample SELECT uniques(namespaceName) WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -258,14 +245,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sDeploymentSample SELECT uniqueCount(deploymentName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sDeploymentSample SELECT uniqueCount(deploymentName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -277,14 +263,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sDaemonsetSample SELECT uniqueCount(daemonsetName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sDaemonsetSample SELECT uniqueCount(daemonsetName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -296,14 +281,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sStatefulsetSample SELECT uniqueCount(statefulsetName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sStatefulsetSample SELECT uniqueCount(statefulsetName) WHERE clusterName = '${var.cluster_name}' FACET namespaceName LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -315,14 +299,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 3
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' FACET namespace LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' FACET namespace LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -334,14 +317,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 3
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' FACET namespace LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' FACET namespace LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -353,14 +335,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 3
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' FACET namespace LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' FACET namespace LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -372,14 +353,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 3
       width            = 3
       visualization_id = "viz.bar"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' FACET namespace LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' FACET namespace LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -390,14 +370,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 1
       width            = 6
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET namespaceName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET namespaceName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -409,14 +388,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND cpuLimitCores IS NOT NULL FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND cpuLimitCores IS NOT NULL FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -428,14 +406,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET namespaceName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET namespaceName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -447,14 +424,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND memoryLimitBytes IS NOT NULL FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND memoryLimitBytes IS NOT NULL FACET namespaceName, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET namespaceName LIMIT 10"
+          }
+        ]
       })
     }
   }
@@ -473,9 +449,8 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 4
       visualization_id = "viz.markdown"
-      configuration = jsonencode(
-        {
-          "text" : "## Pod Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
+      configuration = jsonencode({
+        "text" : "## Pod Overview\nTo be able to visualize every widget properly, New Relic infrastructure agent should be installed."
       })
     }
 
@@ -487,14 +462,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 4
       width            = 4
       visualization_id = "viz.table"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniques(containerName) WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT uniques(containerName) WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -506,14 +480,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -525,14 +498,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND status != 'Running' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND status != 'Running' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -544,14 +516,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND status = 'Running' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -563,14 +534,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND status = 'Pending' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -582,14 +552,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND status = 'Failed' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -601,14 +570,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       height           = 2
       width            = 2
       visualization_id = "viz.billboard"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' LIMIT MAX"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND status = 'Unknown' LIMIT MAX"
+          }
+        ]
       })
     }
 
@@ -619,14 +587,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       column           = 1
       width            = 6
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -638,14 +605,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -657,14 +623,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -676,14 +641,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -695,14 +659,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.area"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
 
@@ -714,14 +677,13 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       width            = 6
       height           = 3
       visualization_id = "viz.line"
-      configuration = jsonencode(
-        {
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
-            }
-          ]
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 TIMESERIES FACET podName LIMIT 10"
+          }
+        ]
       })
     }
   }

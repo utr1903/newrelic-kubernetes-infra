@@ -46,7 +46,7 @@ namespaces=$(curl https://api.eu.newrelic.com/graphql \
 ###################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDeploymentSample SELECT uniques(deploymentName) AS `deploymentNames` WHERE clusterName = '"'$clusterName'"' FACET namespaceName LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDeploymentSample SELECT uniques(deploymentName) AS `deployment_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -65,7 +65,7 @@ deployments=$(curl https://api.eu.newrelic.com/graphql \
 ##################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonsetNames` WHERE clusterName = '"'$clusterName'"' FACET namespaceName LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonset_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -84,7 +84,7 @@ daemonsets=$(curl https://api.eu.newrelic.com/graphql \
 ####################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sStatefulsetSample SELECT uniques(statefulsetName) AS `statefulsetNames` WHERE clusterName = '"'$clusterName'"' FACET namespaceName LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sStatefulsetSample SELECT uniques(statefulsetName) AS `statefulset_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')

@@ -6,17 +6,17 @@ locals {
 
   # Map of deployments
   dashboards_deployments = {
-    for deployment in var.deployments : deployment.namespaceName => deployment.deploymentNames
+    for deployment in var.deployments : deployment.namespace_name => deployment.deployment_names
   }
 
   # Map of daemonsets
   dashboards_daemonsets = {
-    for daemonset in var.daemonsets : daemonset.namespaceName => daemonset.daemonsetNames
+    for daemonset in var.daemonsets : daemonset.namespace_name => daemonset.daemonset_names
   }
 
   # Map of statefulsets
   dashboards_statefulsets = {
-    for statefulset in var.statefulsets : statefulset.namespaceName => statefulset.statefulsetNames
+    for statefulset in var.statefulsets : statefulset.namespace_name => statefulset.statefulset_names
   }
   ######
 
@@ -28,9 +28,9 @@ locals {
   alerts_deployments = flatten(
     [
       for namespace in var.deployments : [
-        for deploymentName in namespace.deploymentNames : {
-          namespaceName  = namespace.namespaceName
-          deploymentName = deploymentName
+        for deployment_name in namespace.deployment_names : {
+          namespace_name  = namespace.namespace_name
+          deployment_name = deployment_name
         }
       ]
     ]

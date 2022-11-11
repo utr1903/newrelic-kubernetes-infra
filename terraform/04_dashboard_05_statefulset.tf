@@ -26,7 +26,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_statefulset_overview" {
         visualization_id = "viz.markdown"
         configuration = jsonencode(
           {
-            "text" : "## Statefulset Overview\nNamespace -> ${var.statefulsets[count.index].namespaceName}\nStatefulset -> ${page.value}."
+            "text" : "## Statefulset Overview\nNamespace -> ${each.key}\nStatefulset -> ${page.value}."
         })
       }
 
