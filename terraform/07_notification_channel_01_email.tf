@@ -4,9 +4,7 @@
 
 # Notification destination - Email
 resource "newrelic_notification_destination" "email" {
-  for_each = {
-    for email in local.emails : email.name => email.email
-  }
+  for_each = local.emails
 
   name       = each.key
   account_id = var.NEW_RELIC_ACCOUNT_ID
@@ -20,9 +18,7 @@ resource "newrelic_notification_destination" "email" {
 
 # Notification channel - Email
 resource "newrelic_notification_channel" "email" {
-  for_each = {
-    for email in local.emails : email.name => email.email
-  }
+  for_each = local.emails
 
   name       = each.key
   account_id = var.NEW_RELIC_ACCOUNT_ID

@@ -2,8 +2,10 @@
 ### Workflow ###
 ################
 
-resource "newrelic_workflow" "kubernetes_nodes_email" {
-  name       = "k8s-${var.cluster_name}-workflow-nodes"
+resource "newrelic_workflow" "kubernetes_email_nodes" {
+  count = length(local.email_targets.nodes)
+
+  name       = "k8s-${var.cluster_name}-workflow-email-${local.email_targets.nodes[count.index]}-nodes"
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
   # enrichments_enabled   = true
@@ -37,12 +39,7 @@ resource "newrelic_workflow" "kubernetes_nodes_email" {
     }
   }
 
-  # Email
-  dynamic "destination" {
-    for_each = local.workflows.nodes.emails
-
-    content {
-      channel_id = newrelic_notification_channel.email[destination.value].id
-    }
+  destination {
+    channel_id = newrelic_notification_channel.email[local.email_targets.nodes[count.index]].id
   }
 }

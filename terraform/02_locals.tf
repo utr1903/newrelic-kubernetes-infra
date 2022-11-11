@@ -41,29 +41,45 @@ locals {
   ### Workflows ###
   #################
 
-  # Emails
-  emails = [
-    {
-      name  = "infra-team"
-      email = "infra@team.com"
-    },
-    {
-      name  = "dev-team"
-      email = "dev@team.com"
-    },
+  # Target names (can be teams or individuals)
+  target_names = [
+    "team1",
+    "team2",
   ]
 
-  # Workflows
-  workflows = {
+  # Emails
+  emails = {
+    (local.target_names[0]) = "team1@team.com"
+    (local.target_names[1]) = "team2@team.com"
+  }
 
-    # Notifications for nodes
-    nodes = {
+  # Emails
+  email_targets = {
 
-      # Emails
-      emails = [
-        local.emails[0].name
+    # Nodes
+    nodes = [
+      local.target_names[0]
+    ]
+
+    # Namespaces
+    namespaces = {
+      (local.target_names[0]) = var.namespace_names,
+      (local.target_names[1]) = [
+        "kube-system"
       ]
     }
   }
+
+  # Email targets for namespaces - organized
+  email_target_namespaces = flatten(
+    [
+      for target_name, namespace_names in local.email_targets.namespaces : [
+        for namespace_name in namespace_names : {
+          target_name    = target_name
+          namespace_name = namespace_name
+        }
+      ]
+    ]
+  )
   ######
 }
