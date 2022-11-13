@@ -7,7 +7,6 @@ cluster by only running 2 scripts:
 
 ## Prerequisites
 
-- bash 4.0+
 - sed
 - curl
 - jq
@@ -17,28 +16,34 @@ cluster by only running 2 scripts:
 ## Installation
 
 In order to install New Relic infrastructure agent, you can run the
-[01_install_infra_agent.sh](scripts/01_install_infra_agent.sh) script.
-This will add New Relic charts (https://helm-charts.newrelic.com) to your Helm
-repositories and will deploy the infrastructure agent
+[01_install_infra_agent.sh](scripts/01_install_infra_agent.sh) script
+with the following arguments:
+
+| Name                      | Argument Flag            |
+| ------------------------- | ------------------------ |
+| deployment name           | `--deployment`           |
+| deployment namespace name | `--deployment-namespace` |
+| cluster name              | `--cluster`              |
+
+- `--deployment` stands for the name of the Helm deployment (required)
+- `--deployment-namespace` stands for the namespace name into which
+the infra agent will be deployed (required)
+- `--cluster` stands for the name of your cluster with which it will
+be seen & queried within New Relic (required)
+
+The script will add New Relic charts (https://helm-charts.newrelic.com)
+to your Helm repositories and will deploy the infrastructure agent
 - in priviliged mode
 - in low data mode
 - with `kube-state-metrics`
 - with `kube-events`
 
-Your Helm deployment will have the:
-
-| Property      | Variable                |
-| ------------- | ----------------------- |
-| name          | `newrelic["name"]`      |
-| namespace     | `newrelic["namespace"]` |
-| cluster name  | `newrelic["cluster"]`   |
-
 **Beware**
 - to define the cluster name unique since this will be
 considered as one particular cluster by the prebuilt NRQL queries within the
-Terraform observability scripts.
+Terraform observability scripts
 - to define your New Relic license key as an environment variable
-`NEWRELIC_LICENSE_KEY=xxx`.
+`NEWRELIC_LICENSE_KEY=xxx`
 
 If you want to add more charts within
 [newrelic-bundle](https://github.com/newrelic/helm-charts/tree/master/charts/nri-bundle),
@@ -46,19 +51,31 @@ feel free to adapt your installation script as you wish.
 
 ## Monitoring
 
-After your installation is successful, you will see the your Kubernetes data
-flowing into your New Relic account. In order to have quick & detailed
-overview to your cluster, you can run the
+After your installation is successful, you will see your Kubernetes
+data flowing into your New Relic account. In order to have quick &
+detailed overview to your cluster, you can run the
 [02_deploy_newrelic_terraform.sh](scripts/02_deploy_newrelic_terraform.sh)
-script.
+script with the following arguments:
+
+| Name         | Argument Flag |
+| -----------  | ------------- |
+| cluster name | `--cluster`   |
+| dry run      | `--dry-run`   |
+| destroy      | `--destroy`   |
+
+- `--cluster` stands for the name of your cluster with which it will
+be seen & queried within New Relic (required)
+- `--dry-run` stands for just running `terraform plan` and prompting
+what changes will look like (optional)
+- `--destroy` stands for deleting the Terraform resources (optional)
 
 **Beware**
-- to set the variable `clusterName` exactly to the one you have defined in
-your agent installation (`newrelic["cluster"]`).
+- to set the argument `--cluster` exactly the same to the one you have
+defined in your agent installation `01_install_infra_agent.sh`.
 - to define your New Relic account ID as an environment variable
 `NEWRELIC_ACCOUNT_ID=xxx`.
 - to set the region of your New Relic account to
-`-var NEW_RELIC_REGION="xx" \`.
+`-var NEW_RELIC_REGION="xx"`.
    - it is either `us` or `eu`
 - to define your New Relic API key as an environment variable
 `NEWRELIC_API_KEY=xxx`.

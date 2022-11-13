@@ -11,23 +11,42 @@ while (( "$#" )); do
       flagDryRun="true"
       shift
       ;;
+    --cluster)
+      cluster="$2"
+      shift
+      ;;
     *)
       shift
       ;;
   esac
 done
 
-### Set variables
+### Check input
+
+# New Relic account ID
+if [[ $NEWRELIC_ACCOUNT_ID == "" ]]; then
+  echo "Define New Relic account ID as an environment variable [NEWRELIC_ACCOUNT_ID]. For example: -> export NEWRELIC_ACCOUNT_ID=xxx"
+  exit 1
+fi
+
+# New Relic API key
+if [[ $NEWRELIC_API_KEY == "" ]]; then
+  echo "Define New Relic API key as an environment variable [NEWRELIC_API_KEY]. For example: -> export NEWRELIC_API_KEY=xxx"
+  exit 1
+fi
 
 # Cluster name
-clusterName="mydopecluster"
+if [[ $cluster == "" ]]; then
+  echo "Define cluster name with the flag [--cluster]. For example -> <mydopeclusterprod>"
+  exit 1
+fi
 
 ##################
 ### NAMESPACES ###
 ##################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sPodSample SELECT uniques(namespaceName) AS `namespaces` WHERE clusterName = '"'$clusterName'"' LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sPodSample SELECT uniques(namespaceName) AS `namespaces` WHERE clusterName = '"'$cluster'"' LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -46,7 +65,7 @@ namespaces=$(curl https://api.eu.newrelic.com/graphql \
 ###################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDeploymentSample SELECT uniques(deploymentName) AS `deployment_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDeploymentSample SELECT uniques(deploymentName) AS `deployment_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -65,7 +84,7 @@ deployments=$(curl https://api.eu.newrelic.com/graphql \
 ##################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonset_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonset_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -84,7 +103,7 @@ daemonsets=$(curl https://api.eu.newrelic.com/graphql \
 ####################
 
 # Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sStatefulsetSample SELECT uniques(statefulsetName) AS `statefulset_names` WHERE clusterName = '"'$clusterName'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
+query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sStatefulsetSample SELECT uniques(statefulsetName) AS `statefulset_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
 
 # Clear the additional spaces
 query=$(echo $query | sed 's/    /  /g')
@@ -112,7 +131,7 @@ if [[ $flagDestroy != "true" ]]; then
     -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
     -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
     -var NEW_RELIC_REGION="eu" \
-    -var cluster_name=$clusterName \
+    -var cluster_name=$cluster \
     -var namespace_names=$namespaces \
     -var deployments=$deployments \
     -var daemonsets=$daemonsets \
@@ -130,7 +149,7 @@ else
   -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
   -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
   -var NEW_RELIC_REGION="eu" \
-  -var cluster_name=$clusterName \
+  -var cluster_name=$cluster \
   -var namespace_names=$namespaces \
   -var deployments=$deployments \
   -var daemonsets=$daemonsets \
