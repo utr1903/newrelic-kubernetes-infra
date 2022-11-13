@@ -74,8 +74,8 @@ what changes will look like (optional)
 defined in your agent installation `01_install_infra_agent.sh`.
 - to define your New Relic account ID as an environment variable
 `NEWRELIC_ACCOUNT_ID=xxx`.
-- to set the region of your New Relic account to
-`-var NEW_RELIC_REGION="xx"`.
+- to define the region of your New Relic account as an environment
+variable `NEWRELIC_REGION="xx"`.
    - it is either `us` or `eu`
 - to define your New Relic API key as an environment variable
 `NEWRELIC_API_KEY=xxx`.

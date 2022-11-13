@@ -28,6 +28,11 @@ if [[ $NEWRELIC_ACCOUNT_ID == "" ]]; then
   echo "Define New Relic account ID as an environment variable [NEWRELIC_ACCOUNT_ID]. For example: -> export NEWRELIC_ACCOUNT_ID=xxx"
   exit 1
 fi
+# New Relic region
+if [[ $NEWRELIC_REGION == "" ]]; then
+  echo "Define New Relic region as an environment variable [NEWRELIC_REGION]. For example: -> export NEWRELIC_REGION=us or export NEWRELIC_REGION=eu"
+  exit 1
+fi
 
 # New Relic API key
 if [[ $NEWRELIC_API_KEY == "" ]]; then
