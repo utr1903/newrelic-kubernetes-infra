@@ -41,7 +41,7 @@ resource "newrelic_workflow" "kubernetes_email_namespaces" {
     predicate {
       attribute = "tag.namespaceName"
       operator  = "EXACTLY_MATCHES"
-      values = ["${local.email_target_namespaces[count.index].namespace_name}"]
+      values    = ["${local.email_target_namespaces[count.index].namespace_name}"]
     }
   }
 
