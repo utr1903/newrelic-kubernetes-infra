@@ -30,8 +30,8 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform -chdir=../terraform init
+      run: terraform -chdir=./terraform init
 
     # Check that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform -chdir=../terraform fmt -check
+      run: terraform -chdir=./terraform fmt -check
