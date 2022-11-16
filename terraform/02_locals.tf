@@ -1,5 +1,11 @@
 locals {
 
+  ###############
+  ### General ###
+  ###############
+
+  namespace_names = sort(var.namespace_names)
+
   ##################
   ### Dashboards ###
   ##################
