@@ -158,6 +158,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
       row              = 5
       column           = 1
       width            = 6
+      height           = 3
       visualization_id = "viz.area"
       configuration = jsonencode({
         "nrqlQueries" : [
@@ -181,7 +182,43 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND cpuLimitCores IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+            "query" : "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 CPU using containers (mcores)
+    widget {
+      title            = "Top 10 CPU using containers (mcores)"
+      row              = 8
+      column           = 1
+      width            = 6
+      height           = 3
+      visualization_id = "viz.area"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET containerName, podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 CPU utilizing containers (%)
+    widget {
+      title            = "Top 10 CPU utilizing containers (%)"
+      row              = 8
+      column           = 7
+      width            = 6
+      height           = 3
+      visualization_id = "viz.line"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND cpuLimitCores IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
           }
         ]
       })
@@ -190,7 +227,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM using pods (bytes)
     widget {
       title            = "Top 10 MEM using pods (bytes)"
-      row              = 8
+      row              = 11
       column           = 1
       width            = 6
       height           = 3
@@ -208,7 +245,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM utilizing pods (%)
     widget {
       title            = "Top 10 MEM utilizing pods (%)"
-      row              = 8
+      row              = 11
       column           = 7
       width            = 6
       height           = 3
@@ -217,16 +254,52 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND memoryLimitBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
           }
         ]
       })
     }
 
-    # Container STO Usage per Pod (bytes)
+    # Top 10 MEM using containers (bytes)
     widget {
-      title            = "Container STO Usage per Pod (bytes)"
-      row              = 11
+      title            = "Top 10 MEM using containers (bytes)"
+      row              = 14
+      column           = 1
+      width            = 6
+      height           = 3
+      visualization_id = "viz.area"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET containerName, podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 MEM utilizing containers (%)
+    widget {
+      title            = "Top 10 MEM utilizing containers (%)"
+      row              = 14
+      column           = 7
+      width            = 6
+      height           = 3
+      visualization_id = "viz.line"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(memoryUsedBytes)/max(memoryLimitBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND memoryLimitBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 STO using pods (bytes)
+    widget {
+      title            = "Top 10 STO using pods (bytes)"
+      row              = 17
       column           = 1
       width            = 6
       height           = 3
@@ -241,10 +314,10 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
       })
     }
 
-    # Container STO Utilization per Pod (%)
+    # Top 10 STO utilizing pods (%)
     widget {
-      title            = "Container STO Utilization per Pod (%)"
-      row              = 11
+      title            = "Top 10 STO utilizing pods (%)"
+      row              = 17
       column           = 7
       width            = 6
       height           = 3
@@ -253,7 +326,43 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND fsCapacityBytes IS NOT NULL FACET podName TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 STO using containers (bytes)
+    widget {
+      title            = "Top 10 STO using containers (bytes)"
+      row              = 20
+      column           = 1
+      width            = 6
+      height           = 3
+      visualization_id = "viz.area"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET containerName, podName TIMESERIES LIMIT 10"
+          }
+        ]
+      })
+    }
+
+    # Top 10 STO utilizing containers (%)
+    widget {
+      title            = "Top 10 STO utilizing containers (%)"
+      row              = 20
+      column           = 7
+      width            = 6
+      height           = 3
+      visualization_id = "viz.line"
+      configuration = jsonencode({
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sContainerSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' AND fsCapacityBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
           }
         ]
       })
