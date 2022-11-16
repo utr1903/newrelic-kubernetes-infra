@@ -580,9 +580,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 CPU using containers per pod (mcores)
+    # Top 10 CPU using pods (mcores)
     widget {
-      title            = "Top 10 CPU using containers per pod (mcores)"
+      title            = "Top 10 CPU using pods (mcores)"
       row              = 5
       column           = 1
       width            = 6
@@ -597,9 +597,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 CPU utilizing containers per pod (%)
+    # Top 10 CPU utilizing pods (%)
     widget {
-      title            = "Top 10 CPU utilizing containers per pod (%)"
+      title            = "Top 10 CPU utilizing pods (%)"
       row              = 5
       column           = 7
       width            = 6
@@ -615,9 +615,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 MEM using containers per pod (bytes)
+    # Top 10 MEM using pods (bytes)
     widget {
-      title            = "Top 10 MEM using containers per pod (bytes)"
+      title            = "Top 10 MEM using pods (bytes)"
       row              = 8
       column           = 1
       width            = 6
@@ -633,9 +633,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 MEM utilizing containers per pod (%)
+    # Top 10 MEM utilizing pods (%)
     widget {
-      title            = "Top 10 MEM utilizing containers per pod (%)"
+      title            = "Top 10 MEM utilizing pods (%)"
       row              = 8
       column           = 7
       width            = 6
@@ -651,9 +651,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 STO using containers per pod (bytes)
+    # Top 10 STO using pods (bytes)
     widget {
-      title            = "Top 10 STO using containers per pod (bytes)"
+      title            = "Top 10 STO using pods (bytes)"
       row              = 11
       column           = 1
       width            = 6
@@ -669,9 +669,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
-    # Top 10 STO utilizing containers per pod (%)
+    # Top 10 STO utilizing pods (%)
     widget {
-      title            = "Top 10 STO utilizing containers per pod (%)"
+      title            = "Top 10 STO utilizing pods (%)"
       row              = 11
       column           = 7
       width            = 6
