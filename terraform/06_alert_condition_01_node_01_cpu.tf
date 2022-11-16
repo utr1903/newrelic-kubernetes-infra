@@ -14,13 +14,13 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_cpu_utilization" {
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
   fill_option                    = "none"
-  aggregation_window             = 60
+  aggregation_window             = 1 * 60 // minutes calculated into seconds
   aggregation_method             = "event_flow"
-  aggregation_delay              = 120
-  expiration_duration            = 120
+  aggregation_delay              = 2 * 60  // minutes calculated into seconds
+  expiration_duration            = 20 * 60 // minutes calculated into seconds
   open_violation_on_expiration   = true
   close_violations_on_expiration = true
-  slide_by                       = 30
+  slide_by                       = 30 // seconds
 
   nrql {
     query = "FROM K8sNodeSample SELECT max(cpuUsedCores)/max(capacityCpuCores)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName"
@@ -29,14 +29,14 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_cpu_utilization" {
   warning {
     operator              = "above"
     threshold             = 50
-    threshold_duration    = 60 * 5 // minutes calculated into seconds
+    threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
 
   critical {
     operator              = "above"
     threshold             = 75
-    threshold_duration    = 60 * 5 // minutes calculated into seconds
+    threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
 }
