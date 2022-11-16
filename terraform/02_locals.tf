@@ -69,7 +69,7 @@ locals {
 
     # Namespaces
     namespaces = {
-      (local.target_names[0]) = var.namespace_names,
+      (local.target_names[0]) = local.namespace_names,
       (local.target_names[1]) = [
         "kube-system"
       ]
