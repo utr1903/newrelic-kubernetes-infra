@@ -203,7 +203,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries" : [
             {
               "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes)*1000 AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
+              "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
             }
           ]
         })
@@ -239,7 +239,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
           "nrqlQueries" : [
             {
               "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes)*1000 AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
+              "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
             }
           ]
         })

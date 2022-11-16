@@ -199,7 +199,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes)*1000 AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
+            "query" : "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET podName LIMIT 10"
           }
         ]
       })
@@ -235,7 +235,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes)*1000 AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
+            "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${var.namespace_names[count.index]}' FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET podName LIMIT 10"
           }
         ]
       })
