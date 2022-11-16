@@ -14,9 +14,9 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_cpu_utilization" {
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
   fill_option                    = "none"
-  aggregation_window             = 1 *  60 // minutes calculated into seconds
+  aggregation_window             = 1 * 60 // minutes calculated into seconds
   aggregation_method             = "event_flow"
-  aggregation_delay              = 2 * 60 // minutes calculated into seconds
+  aggregation_delay              = 2 * 60  // minutes calculated into seconds
   expiration_duration            = 20 * 60 // minutes calculated into seconds
   open_violation_on_expiration   = true
   close_violations_on_expiration = true
