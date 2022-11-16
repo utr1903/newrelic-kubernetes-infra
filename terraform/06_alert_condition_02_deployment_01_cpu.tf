@@ -30,14 +30,14 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   warning {
     operator              = "above"
     threshold             = 50
-    threshold_duration    = 60 * 5 // minutes calculated into seconds
+    threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
 
   critical {
     operator              = "above"
     threshold             = 75
-    threshold_duration    = 60 * 5 // minutes calculated into seconds
+    threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
 }
