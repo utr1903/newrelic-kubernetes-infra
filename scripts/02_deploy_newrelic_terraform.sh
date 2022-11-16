@@ -141,7 +141,7 @@ if [[ $flagDestroy != "true" ]]; then
   terraform -chdir=../terraform plan \
     -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
     -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
-    -var NEW_RELIC_REGION="eu" \
+    -var NEW_RELIC_REGION=$NEWRELIC_REGION \
     -var cluster_name=$cluster \
     -var namespace_names=$namespaces \
     -var deployments=$deployments \
@@ -159,7 +159,7 @@ else
   terraform -chdir=../terraform destroy \
   -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
   -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
-  -var NEW_RELIC_REGION="eu" \
+  -var NEW_RELIC_REGION=$NEWRELIC_REGION \
   -var cluster_name=$cluster \
   -var namespace_names=$namespaces \
   -var deployments=$deployments \
