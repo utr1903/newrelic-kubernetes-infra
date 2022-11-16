@@ -299,9 +299,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Top 10 MEM utilizing pods (bytes)
+      # Top 10 STO utilizing pods (bytes)
       widget {
-        title            = "Top 10 MEM utilizing pods (bytes)"
+        title            = "Top 10 STO utilizing pods (bytes)"
         row              = 17
         column           = 1
         width            = 6
@@ -335,9 +335,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Top 10 MEM utilizing pods (bytes)
+      # Top 10 STO utilizing pods (bytes)
       widget {
-        title            = "# Top 10 MEM utilizing pods (bytes)"
+        title            = "Top 10 STO utilizing pods (bytes)"
         row              = 20
         column           = 1
         width            = 6
