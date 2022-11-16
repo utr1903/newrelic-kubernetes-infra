@@ -15,13 +15,13 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
   fill_option                    = "none"
-  aggregation_window             = 60
+  aggregation_window             = 1 *  60 // minutes calculated into seconds
   aggregation_method             = "event_flow"
-  aggregation_delay              = 120
+  aggregation_delay              = 2 * 60 // minutes calculated into seconds
   expiration_duration            = 20 * 60 // minutes calculated into seconds
   open_violation_on_expiration   = true
   close_violations_on_expiration = true
-  slide_by                       = 30
+  slide_by                       = 30 // seconds
 
   nrql {
     query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index].namespace_name}' AND deploymentName = '${local.alerts_deployments[count.index].deployment_name}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
