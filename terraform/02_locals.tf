@@ -12,17 +12,17 @@ locals {
 
   # Map of deployments
   dashboards_deployments = {
-    for deployment in var.deployments : deployment.namespace_name => deployment.deployment_names
+    for deployment in var.deployments : deployment.namespace_name => sort(deployment.deployment_names)
   }
 
   # Map of daemonsets
   dashboards_daemonsets = {
-    for daemonset in var.daemonsets : daemonset.namespace_name => daemonset.daemonset_names
+    for daemonset in var.daemonsets : daemonset.namespace_name => sort(daemonset.daemonset_names)
   }
 
   # Map of statefulsets
   dashboards_statefulsets = {
-    for statefulset in var.statefulsets : statefulset.namespace_name => statefulset.statefulset_names
+    for statefulset in var.statefulsets : statefulset.namespace_name => sort(statefulset.statefulset_names)
   }
   ######
 

@@ -47,42 +47,6 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Container (Running)
-      widget {
-        title            = "Container (Running)"
-        row              = 3
-        column           = 1
-        height           = 2
-        width            = 2
-        visualization_id = "viz.billboard"
-        configuration = jsonencode({
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Running' LIMIT MAX"
-            }
-          ]
-        })
-      }
-
-      # Container (Terminated/Unknown)
-      widget {
-        title            = "Container (Terminated/Unknown)"
-        row              = 3
-        column           = 3
-        height           = 2
-        width            = 2
-        visualization_id = "viz.billboard"
-        configuration = jsonencode({
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status != 'Running' LIMIT MAX"
-            }
-          ]
-        })
-      }
-
       # Pod (Running)
       widget {
         title            = "Pod (Running)"
@@ -114,6 +78,42 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
             {
               "accountId" : var.NEW_RELIC_ACCOUNT_ID,
               "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Pending' LIMIT MAX"
+            }
+          ]
+        })
+      }
+
+      # Container (Running)
+      widget {
+        title            = "Container (Running)"
+        row              = 3
+        column           = 1
+        height           = 2
+        width            = 2
+        visualization_id = "viz.billboard"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Running' LIMIT MAX"
+            }
+          ]
+        })
+      }
+
+      # Container (Terminated/Unknown)
+      widget {
+        title            = "Container (Terminated/Unknown)"
+        row              = 3
+        column           = 3
+        height           = 2
+        width            = 2
+        visualization_id = "viz.billboard"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status != 'Running' LIMIT MAX"
             }
           ]
         })
