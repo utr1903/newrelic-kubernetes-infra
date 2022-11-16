@@ -18,7 +18,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_mem_utilization"
   aggregation_window             = 60
   aggregation_method             = "event_flow"
   aggregation_delay              = 120
-  expiration_duration            = 120
+  expiration_duration            = 20 * 60 // minutes calculated into seconds
   open_violation_on_expiration   = true
   close_violations_on_expiration = true
   slide_by                       = 30
