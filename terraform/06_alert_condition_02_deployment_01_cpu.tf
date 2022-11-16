@@ -5,7 +5,7 @@
 # Alert condition - CPU
 resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization" {
   count      = length(local.alerts_deployments)
-  name       = "Namespace (${local.alerts_deployments[count.index].namespace_name}) | Deployment (${local.alerts_deployments[count.index].deployment_name})"
+  name       = "Namespace (${local.alerts_deployments[count.index][0]}) | Deployment (${local.alerts_deployments[count.index][1]}) | CPU"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   policy_id  = newrelic_alert_policy.kubernetes_deployment.id
 
@@ -24,7 +24,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   slide_by                       = 30 // seconds
 
   nrql {
-    query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index].namespace_name}' AND deploymentName = '${local.alerts_deployments[count.index].deployment_name}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
+    query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index][0]}' AND deploymentName = '${local.alerts_deployments[count.index][1]}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
   }
 
   warning {
@@ -64,11 +64,11 @@ resource "newrelic_entity_tags" "kubernetes_deployment_cpu_utilization" {
 
   tag {
     key    = "namespaceName"
-    values = ["${local.alerts_deployments[count.index].namespace_name}"]
+    values = ["${local.alerts_deployments[count.index][0]}"]
   }
 
   tag {
     key    = "deploymentName"
-    values = ["${local.alerts_deployments[count.index].deployment_name}"]
+    values = ["${local.alerts_deployments[count.index][1]}"]
   }
 }

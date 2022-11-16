@@ -47,42 +47,6 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Container (Running)
-      widget {
-        title            = "Container (Running)"
-        row              = 3
-        column           = 1
-        height           = 2
-        width            = 2
-        visualization_id = "viz.billboard"
-        configuration = jsonencode({
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Running' LIMIT MAX"
-            }
-          ]
-        })
-      }
-
-      # Container (Terminated/Unknown)
-      widget {
-        title            = "Container (Terminated/Unknown)"
-        row              = 3
-        column           = 3
-        height           = 2
-        width            = 2
-        visualization_id = "viz.billboard"
-        configuration = jsonencode({
-          "nrqlQueries" : [
-            {
-              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status != 'Running' LIMIT MAX"
-            }
-          ]
-        })
-      }
-
       # Pod (Running)
       widget {
         title            = "Pod (Running)"
@@ -114,6 +78,42 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
             {
               "accountId" : var.NEW_RELIC_ACCOUNT_ID,
               "query" : "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Pending' LIMIT MAX"
+            }
+          ]
+        })
+      }
+
+      # Container (Running)
+      widget {
+        title            = "Container (Running)"
+        row              = 3
+        column           = 1
+        height           = 2
+        width            = 2
+        visualization_id = "viz.billboard"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status = 'Running' LIMIT MAX"
+            }
+          ]
+        })
+      }
+
+      # Container (Terminated/Unknown)
+      widget {
+        title            = "Container (Terminated/Unknown)"
+        row              = 3
+        column           = 3
+        height           = 2
+        width            = 2
+        visualization_id = "viz.billboard"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND status != 'Running' LIMIT MAX"
             }
           ]
         })
@@ -191,10 +191,46 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
+      # Top 10 CPU using containers (mcores)
+      widget {
+        title            = "Top 10 CPU using containers (mcores)"
+        row              = 8
+        column           = 1
+        width            = 6
+        height           = 3
+        visualization_id = "viz.area"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET containerName, podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
+      # Top 10 CPU utilizing containers (%)
+      widget {
+        title            = "Top 10 CPU utilizing containers (%)"
+        row              = 8
+        column           = 7
+        width            = 6
+        height           = 3
+        visualization_id = "viz.line"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND cpuLimitCores IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
       # Top 10 MEM using pods (bytes)
       widget {
         title            = "Top 10 MEM using pods (bytes)"
-        row              = 8
+        row              = 11
         column           = 1
         width            = 6
         height           = 3
@@ -212,7 +248,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
       # Top 10 MEM utilizing pods (%)
       widget {
         title            = "Top 10 MEM utilizing pods (%)"
-        row              = 8
+        row              = 11
         column           = 7
         width            = 6
         height           = 3
@@ -227,10 +263,46 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Container STO Usage per Pod (bytes)
+      # Top 10 MEM using containers (bytes)
       widget {
-        title            = "Container STO Usage per Pod (bytes)"
-        row              = 11
+        title            = "Top 10 MEM using containers (bytes)"
+        row              = 14
+        column           = 1
+        width            = 6
+        height           = 3
+        visualization_id = "viz.area"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET containerName, podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
+      # Top 10 MEM utilizing containers (%)
+      widget {
+        title            = "Top 10 MEM utilizing containers (%)"
+        row              = 14
+        column           = 7
+        width            = 6
+        height           = 3
+        visualization_id = "viz.line"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(memoryUsedBytes)/max(memoryLimitBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND memoryLimitBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
+      # Top 10 STO utilizing pods (bytes)
+      widget {
+        title            = "Top 10 STO utilizing pods (bytes)"
+        row              = 17
         column           = 1
         width            = 6
         height           = 3
@@ -245,10 +317,10 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
         })
       }
 
-      # Container STO Utilization per Pod (%)
+      # Top 10 STO utilizing pods (%)
       widget {
-        title            = "Container STO Utilization per Pod (%)"
-        row              = 11
+        title            = "Top 10 STO utilizing pods (%)"
+        row              = 17
         column           = 7
         width            = 6
         height           = 3
@@ -258,6 +330,42 @@ resource "newrelic_one_dashboard_raw" "kubernetes_deployment_overview" {
             {
               "accountId" : var.NEW_RELIC_ACCOUNT_ID,
               "query" : "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
+      # Top 10 STO utilizing pods (bytes)
+      widget {
+        title            = "Top 10 STO utilizing pods (bytes)"
+        row              = 20
+        column           = 1
+        width            = 6
+        height           = 3
+        visualization_id = "viz.area"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' FACET containerName, podName TIMESERIES LIMIT 10"
+            }
+          ]
+        })
+      }
+
+      # Top 10 STO utilizing containers (%)
+      widget {
+        title            = "Top 10 STO utilizing containers (%)"
+        row              = 20
+        column           = 7
+        width            = 6
+        height           = 3
+        visualization_id = "viz.line"
+        configuration = jsonencode({
+          "nrqlQueries" : [
+            {
+              "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+              "query" : "FROM K8sContainerSample SELECT max(fsUsedBytes)/max(fsCapacityBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${each.key}' AND deploymentName = '${page.value}' AND fsCapacityBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
             }
           ]
         })
