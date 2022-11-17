@@ -152,10 +152,48 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
       })
     }
 
+    # Proportion of ready pods (%)
+    widget {
+      title            = "Proportion of ready pods (%)"
+      row              = 5
+      column           = 1
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit": 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}'"
+          }
+        ]
+      })
+    }
+
+    # Proportion of unschedulable pods (%)
+    widget {
+      title            = "Proportion of unschedulable pods (%)"
+      row              = 5
+      column           = 7
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit": 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `unscheduled (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}'"
+          }
+        ]
+      })
+    }
+
     # Top 10 CPU using pods (mcores)
     widget {
       title            = "Top 10 CPU using pods (mcores)"
-      row              = 5
+      row              = 7
       column           = 1
       width            = 6
       height           = 3
@@ -173,7 +211,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 CPU utilizing pods (%)
     widget {
       title            = "Top 10 CPU utilizing pods (%)"
-      row              = 5
+      row              = 7
       column           = 7
       width            = 6
       height           = 3
@@ -191,7 +229,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 CPU using containers (mcores)
     widget {
       title            = "Top 10 CPU using containers (mcores)"
-      row              = 8
+      row              = 10
       column           = 1
       width            = 6
       height           = 3
@@ -209,7 +247,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 CPU utilizing containers (%)
     widget {
       title            = "Top 10 CPU utilizing containers (%)"
-      row              = 8
+      row              = 10
       column           = 7
       width            = 6
       height           = 3
@@ -227,7 +265,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM using pods (bytes)
     widget {
       title            = "Top 10 MEM using pods (bytes)"
-      row              = 11
+      row              = 13
       column           = 1
       width            = 6
       height           = 3
@@ -245,7 +283,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM utilizing pods (%)
     widget {
       title            = "Top 10 MEM utilizing pods (%)"
-      row              = 11
+      row              = 13
       column           = 7
       width            = 6
       height           = 3
@@ -263,7 +301,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM using containers (bytes)
     widget {
       title            = "Top 10 MEM using containers (bytes)"
-      row              = 14
+      row              = 16
       column           = 1
       width            = 6
       height           = 3
@@ -281,7 +319,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 MEM utilizing containers (%)
     widget {
       title            = "Top 10 MEM utilizing containers (%)"
-      row              = 14
+      row              = 16
       column           = 7
       width            = 6
       height           = 3
@@ -299,7 +337,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 STO using pods (bytes)
     widget {
       title            = "Top 10 STO using pods (bytes)"
-      row              = 17
+      row              = 19
       column           = 1
       width            = 6
       height           = 3
@@ -317,7 +355,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 STO utilizing pods (%)
     widget {
       title            = "Top 10 STO utilizing pods (%)"
-      row              = 17
+      row              = 19
       column           = 7
       width            = 6
       height           = 3
@@ -335,7 +373,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 STO using containers (bytes)
     widget {
       title            = "Top 10 STO using containers (bytes)"
-      row              = 20
+      row              = 22
       column           = 1
       width            = 6
       height           = 3
@@ -353,7 +391,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
     # Top 10 STO utilizing containers (%)
     widget {
       title            = "Top 10 STO utilizing containers (%)"
-      row              = 20
+      row              = 22
       column           = 7
       width            = 6
       height           = 3
