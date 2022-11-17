@@ -165,7 +165,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}'"
+            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}' LIMIT MAX"
           }
         ]
       })
@@ -184,7 +184,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_namespace_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `unscheduled (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}'"
+            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `unscheduled (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.namespace_names[count.index]}' LIMIT MAX"
           }
         ]
       })
