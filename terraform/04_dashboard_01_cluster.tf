@@ -657,7 +657,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
         "nrqlQueries" : [
           {
             "accountId" : var.NEW_RELIC_ACCOUNT_ID,
-            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `scheduled (%)` WHERE clusterName = '${var.cluster_name}'"
+            "query": "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `unscheduled (%)` WHERE clusterName = '${var.cluster_name}'"
           }
         ]
       })
