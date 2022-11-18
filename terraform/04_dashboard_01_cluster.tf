@@ -97,11 +97,50 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
+    # Proportion of ready nodes (%)
+    widget {
+      title            = "Proportion of ready nodes (%)"
+      row              = 6
+      column           = 1
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit" : 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT filter(uniqueCount(nodeName), WHERE condition.Ready = 1)/uniqueCount(nodeName)*100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
+      })
+    }
+
+    # Proportion of unschedulable nodes (%)
+    widget {
+      title            = "Proportion of unschedulable nodes (%)"
+      row              = 6
+      column           = 7
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit" : 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sNodeSample SELECT filter(uniqueCount(nodeName), WHERE unschedulable = 1)/uniqueCount(nodeName)*100 AS `unschedulable (%)` WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
+      })
+    }
+
     # Node CPU usage (mcores)
     widget {
       title            = "Node CPU usage (mcores)"
-      row              = 3
+      row              = 8
       column           = 1
+      height           = 3
       width            = 6
       visualization_id = "viz.area"
       configuration = jsonencode({
@@ -117,8 +156,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Node CPU utilization (%)
     widget {
       title            = "Node CPU utilization (%)"
-      row              = 3
+      row              = 8
       column           = 7
+      height           = 3
       width            = 6
       visualization_id = "viz.line"
       configuration = jsonencode({
@@ -134,8 +174,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Node MEM usage (bytes)
     widget {
       title            = "Node MEM usage (bytes)"
-      row              = 4
+      row              = 11
       column           = 1
+      height           = 3
       width            = 6
       visualization_id = "viz.area"
       configuration = jsonencode({
@@ -151,8 +192,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Node MEM utilization (%)
     widget {
       title            = "Node MEM utilization (%)"
-      row              = 4
+      row              = 11
       column           = 7
+      height           = 3
       width            = 6
       visualization_id = "viz.line"
       configuration = jsonencode({
@@ -168,8 +210,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Node STO usage (bytes)
     widget {
       title            = "Node STO usage (bytes)"
-      row              = 5
+      row              = 14
       column           = 1
+      height           = 3
       width            = 6
       visualization_id = "viz.area"
       configuration = jsonencode({
@@ -185,8 +228,9 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Node STO utilization (%)
     widget {
       title            = "Node STO utilization (%)"
-      row              = 5
+      row              = 14
       column           = 7
+      height           = 3
       width            = 6
       visualization_id = "viz.line"
       configuration = jsonencode({
@@ -365,9 +409,10 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
 
     # Top 10 CPU using namespaces (mcores)
     widget {
-      title            = "# Top 10 CPU using namespaces (mcores)"
+      title            = "Top 10 CPU using namespaces (mcores)"
       row              = 5
       column           = 1
+      height           = 3
       width            = 6
       visualization_id = "viz.area"
       configuration = jsonencode({
@@ -580,11 +625,50 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
       })
     }
 
+    # Proportion of ready pods (%)
+    widget {
+      title            = "Proportion of ready pods (%)"
+      row              = 5
+      column           = 1
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit" : 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
+      })
+    }
+
+    # Proportion of unschedulable pods (%)
+    widget {
+      title            = "Proportion of unschedulable pods (%)"
+      row              = 5
+      column           = 7
+      height           = 2
+      width            = 6
+      visualization_id = "viz.bullet"
+      configuration = jsonencode({
+        "limit" : 100,
+        "nrqlQueries" : [
+          {
+            "accountId" : var.NEW_RELIC_ACCOUNT_ID,
+            "query" : "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isScheduled = 0) / uniqueCount(podName) * 100 AS `unscheduled (%)` WHERE clusterName = '${var.cluster_name}' LIMIT MAX"
+          }
+        ]
+      })
+    }
+
     # Top 10 CPU using pods (mcores)
     widget {
       title            = "Top 10 CPU using pods (mcores)"
-      row              = 5
+      row              = 7
       column           = 1
+      height           = 3
       width            = 6
       visualization_id = "viz.area"
       configuration = jsonencode({
@@ -600,7 +684,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Top 10 CPU utilizing pods (%)
     widget {
       title            = "Top 10 CPU utilizing pods (%)"
-      row              = 5
+      row              = 7
       column           = 7
       width            = 6
       height           = 3
@@ -618,7 +702,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Top 10 MEM using pods (bytes)
     widget {
       title            = "Top 10 MEM using pods (bytes)"
-      row              = 8
+      row              = 10
       column           = 1
       width            = 6
       height           = 3
@@ -636,7 +720,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Top 10 MEM utilizing pods (%)
     widget {
       title            = "Top 10 MEM utilizing pods (%)"
-      row              = 8
+      row              = 10
       column           = 7
       width            = 6
       height           = 3
@@ -654,7 +738,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Top 10 STO using pods (bytes)
     widget {
       title            = "Top 10 STO using pods (bytes)"
-      row              = 11
+      row              = 13
       column           = 1
       width            = 6
       height           = 3
@@ -672,7 +756,7 @@ resource "newrelic_one_dashboard_raw" "kubernetes_cluster_overview" {
     # Top 10 STO utilizing pods (%)
     widget {
       title            = "Top 10 STO utilizing pods (%)"
-      row              = 11
+      row              = 13
       column           = 7
       width            = 6
       height           = 3
