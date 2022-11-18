@@ -28,7 +28,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_readiness" {
 
   critical {
     operator              = "above"
-    threshold             = 1
+    threshold             = 0
     threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
