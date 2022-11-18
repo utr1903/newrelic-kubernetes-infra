@@ -148,3 +148,8 @@ regarding nodes.
 - The `namespaces` accepts a map where you can assign namespaces to your
 `target_names` which you want them to get notified when an issue occurs
 regarding the namespaces you have particularly defined.
+
+### Maintainers
+- [Ugur Turkarslan](https://github.com/utr1903)
+
+[![contributors](https://contributors-img.web.app/image?repo=utr1903/newrelic-kubernetes-infra)](https://github.com/utr1903/newrelic-kubernetes-infra/graphs/contributors)
