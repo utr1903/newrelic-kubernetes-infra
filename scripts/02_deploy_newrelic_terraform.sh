@@ -134,8 +134,18 @@ statefulsets=$(curl https://api.eu.newrelic.com/graphql \
 
 if [[ $flagDestroy != "true" ]]; then
 
-  # Initialise Terraform
+  # Initialize Terraform
   terraform -chdir=../terraform init
+
+  # Check if workspace exists
+  workspaceExists=$(terraform -chdir=../terraform workspace list \
+    | grep -w "$cluster")
+  
+  if [[ $workspaceExists = "" ]]; then
+    terraform -chdir=../terraform workspace new "$cluster"
+  else
+    terraform -chdir=../terraform workspace select "$cluster"
+  fi
 
   # Plan Terraform
   terraform -chdir=../terraform plan \
@@ -155,15 +165,30 @@ if [[ $flagDestroy != "true" ]]; then
   fi
 else
 
+  # Check if workspace exists
+  workspaceExists=$(terraform -chdir=../terraform workspace list \
+    | grep -w "$cluster")
+  
+  if [[ $workspaceExists = "" ]]; then
+    echo "Workspace for $cluster does not exist!"
+    exit 1
+  else
+    terraform -chdir=../terraform workspace select "$cluster"
+  fi
+
   # Destroy Terraform
   terraform -chdir=../terraform destroy \
-  -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
-  -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
-  -var NEW_RELIC_REGION=$NEWRELIC_REGION \
-  -var cluster_name=$cluster \
-  -var namespace_names=$namespaces \
-  -var deployments=$deployments \
-  -var daemonsets=$daemonsets \
-  -var statefulsets=$statefulsets
+    -var NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID \
+    -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
+    -var NEW_RELIC_REGION=$NEWRELIC_REGION \
+    -var cluster_name=$cluster \
+    -var namespace_names=$namespaces \
+    -var deployments=$deployments \
+    -var daemonsets=$daemonsets \
+    -var statefulsets=$statefulsets
+
+  # Remove workspace
+  terraform -chdir=../terraform workspace select "default"
+  terraform -chdir=../terraform workspace delete "$cluster"
 fi
 #########
