@@ -2,14 +2,14 @@
 ### Alert Condition ###
 #######################
 
-# Alert condition - CPU
-resource "newrelic_nrql_alert_condition" "kubernetes_node_cpu_utilization" {
-  name       = "K8s Cluster ${var.cluster_name} | Nodes | CPU"
+# Alert condition - Readiness
+resource "newrelic_nrql_alert_condition" "kubernetes_node_readiness" {
+  name       = "K8s Cluster ${var.cluster_name} | Nodes | Readiness"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   policy_id  = newrelic_alert_policy.kubernetes_node.id
 
   type        = "static"
-  description = "Alert when CPU utilization remains too high."
+  description = "Alert when a node is not ready."
 
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
@@ -23,27 +23,20 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_cpu_utilization" {
   slide_by                       = 30 // seconds
 
   nrql {
-    query = "FROM K8sNodeSample SELECT max(cpuUsedCores)/max(capacityCpuCores)*100 WHERE clusterName = '${var.cluster_name}' FACET nodeName"
-  }
-
-  warning {
-    operator              = "above"
-    threshold             = 50
-    threshold_duration    = 5 * 60 // minutes calculated into seconds
-    threshold_occurrences = "all"
+    query = "FROM K8sNodeSample SELECT uniqueCount(nodeName) WHERE clusterName = '${var.cluster_name}' AND condition.Ready = 0"
   }
 
   critical {
     operator              = "above"
-    threshold             = 75
+    threshold             = 0
     threshold_duration    = 5 * 60 // minutes calculated into seconds
     threshold_occurrences = "all"
   }
 }
 
-# Alert condition tag - CPU
-resource "newrelic_entity_tags" "kubernetes_node_cpu_utilization" {
-  guid = newrelic_nrql_alert_condition.kubernetes_node_cpu_utilization.entity_guid
+# Alert condition tag - Readiness
+resource "newrelic_entity_tags" "kubernetes_node_readiness" {
+  guid = newrelic_nrql_alert_condition.kubernetes_node_readiness.entity_guid
 
   tag {
     key    = "k8sClusterName"
@@ -57,6 +50,6 @@ resource "newrelic_entity_tags" "kubernetes_node_cpu_utilization" {
 
   tag {
     key    = "alertProperty"
-    values = ["cpuUtilization"]
+    values = ["readiness"]
   }
 }

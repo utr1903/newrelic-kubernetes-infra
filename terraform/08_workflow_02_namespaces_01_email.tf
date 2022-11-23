@@ -2,10 +2,28 @@
 ### Workflow ###
 ################
 
-resource "newrelic_workflow" "kubernetes_email_namespaces" {
+# Notification channel - Email
+resource "newrelic_notification_channel" "kubernetes_email_namespaces" {
   count = length(local.email_target_namespaces)
 
   name       = "k8s-${var.cluster_name}-workflow-email-${local.email_target_namespaces[count.index].target_name}-namespace-${local.email_target_namespaces[count.index].namespace_name}"
+  account_id = var.NEW_RELIC_ACCOUNT_ID
+  type       = "EMAIL"
+
+  destination_id = newrelic_notification_destination.email[local.email_target_namespaces[count.index].target_name].id
+  product        = "IINT"
+
+  property {
+    key   = "subject"
+    value = "Alert - ${local.email_target_namespaces[count.index].target_name}"
+  }
+}
+
+# Workflow
+resource "newrelic_workflow" "kubernetes_email_namespaces" {
+  count = length(local.email_target_namespaces)
+
+  name       = newrelic_notification_channel.kubernetes_email_namespaces[count.index].name
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
   # enrichments_enabled   = true
@@ -46,6 +64,6 @@ resource "newrelic_workflow" "kubernetes_email_namespaces" {
   }
 
   destination {
-    channel_id = newrelic_notification_channel.email[local.email_target_namespaces[count.index].target_name].id
+    channel_id = newrelic_notification_channel.kubernetes_email_namespaces[count.index].id
   }
 }
