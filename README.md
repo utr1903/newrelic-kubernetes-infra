@@ -149,6 +149,17 @@ regarding nodes.
 `target_names` which you want them to get notified when an issue occurs
 regarding the namespaces you have particularly defined.
 
+### REMARK
+
+Currently (23.12.2022), there is a bug on the New Relic Terraform provider
+side which causes the following error:
+`An error occurred resolving this field: SERVER_ERROR`
+
+If you randomly face this error, you can run the Terraform deployment
+again. It will deploy all of the resources eventually. The necessary
+update will be done for this repository after the provider has fixed the
+bug.
+
 ### Maintainers
 - [Ugur Turkarslan](https://github.com/utr1903)
 
