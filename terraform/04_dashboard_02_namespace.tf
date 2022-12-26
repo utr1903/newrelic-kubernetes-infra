@@ -7,7 +7,7 @@ resource "newrelic_one_dashboard" "exampledash" {
   name = "K8s Cluster ${var.cluster_name} | Namespaces"
 
   page {
-    name = "New Relic Terraform Example"
+    name = "Namespaces"
 
     # Page description
     widget_markdown {
