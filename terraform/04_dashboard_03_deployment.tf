@@ -2,7 +2,7 @@
 ### Dashboards ###
 ##################
 
-# Dashboard - Kubernetes Namespace Overview
+# Dashboard - Kubernetes Deployment Overview
 resource "newrelic_one_dashboard" "kubernetes_deployment_overview" {
   name = "K8s Cluster ${var.cluster_name} | Deployments"
 
