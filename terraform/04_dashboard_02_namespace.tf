@@ -329,7 +329,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
 
     nrql_query {
       account_ids = [var.NEW_RELIC_ACCOUNT_ID]
-      query       = "FROM K8sPodSample SELECT uniques(namespaceName)"
+      query       = "FROM K8sPodSample SELECT uniques(namespaceName) WHERE clusterName = '${var.cluster_name}'"
     }
   }
 }
