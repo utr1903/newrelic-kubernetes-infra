@@ -163,7 +163,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 CPU utilizing pods (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 CPU utilizing pods (%)"
       row    = 7
       column = 7
@@ -191,7 +191,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 CPU utilizing containers (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 CPU utilizing containers (%)"
       row    = 10
       column = 7
@@ -219,7 +219,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 MEM utilizing pods (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 MEM utilizing pods (%)"
       row    = 13
       column = 7
@@ -247,7 +247,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 MEM utilizing containers (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 MEM utilizing containers (%)"
       row    = 16
       column = 7
@@ -275,7 +275,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 STO utilizing pods (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 STO utilizing pods (%)"
       row    = 19
       column = 7
@@ -303,7 +303,7 @@ resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
     }
 
     # Top 10 STO utilizing containers (%)
-    widget_area {
+    widget_line {
       title  = "Top 10 STO utilizing containers (%)"
       row    = 22
       column = 7
