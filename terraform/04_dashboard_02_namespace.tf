@@ -3,7 +3,7 @@
 ##################
 
 # Dashboard - Kubernetes Namespace Overview
-resource "newrelic_one_dashboard" "exampledash" {
+resource "newrelic_one_dashboard" "kubernetes_namespace_overview" {
   name = "K8s Cluster ${var.cluster_name} | Namespaces"
 
   page {
