@@ -329,7 +329,7 @@ resource "newrelic_one_dashboard" "exampledash" {
 
     nrql_query {
       account_ids = [var.NEW_RELIC_ACCOUNT_ID]
-      query       = "FROM K8sNamespaceSample SELECT uniques(namespace)"
+      query       = "FROM K8sPodSample SELECT uniques(namespaceName)"
     }
   }
 }
