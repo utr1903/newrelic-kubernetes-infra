@@ -333,7 +333,7 @@ resource "newrelic_one_dashboard" "kubernetes_daemonset_overview" {
     }
   }
 
-  # Deployments
+  # Daemonsets
   variable {
     name  = "daemonsets"
     title = "daemonsets"
