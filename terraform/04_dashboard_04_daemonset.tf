@@ -320,7 +320,7 @@ resource "newrelic_one_dashboard" "kubernetes_daemonset_overview" {
   # Namespaces
   variable {
     name  = "namespaces"
-    title = "namespaces"
+    title = "Namespaces"
     type  = "nrql"
 
     default_values       = ["*"]
@@ -336,7 +336,7 @@ resource "newrelic_one_dashboard" "kubernetes_daemonset_overview" {
   # Daemonsets
   variable {
     name  = "daemonsets"
-    title = "daemonsets"
+    title = "Daemonsets"
     type  = "nrql"
 
     default_values       = ["*"]

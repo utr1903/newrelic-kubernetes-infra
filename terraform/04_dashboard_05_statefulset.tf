@@ -30,7 +30,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT uniques(containerName) WHERE podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) LIMIT MAX"
+        query      = "FROM K8sContainerSample SELECT uniques(containerName) WHERE podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) LIMIT MAX"
       }
     }
 
@@ -44,7 +44,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Running' LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Running' LIMIT MAX"
       }
     }
 
@@ -58,7 +58,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Pending' LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Pending` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Pending' LIMIT MAX"
       }
     }
 
@@ -72,7 +72,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Running' LIMIT MAX"
+        query      = "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Running' LIMIT MAX"
       }
     }
 
@@ -86,7 +86,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status != 'Running' LIMIT MAX"
+        query      = "FROM K8sContainerSample SELECT uniqueCount(containerName) AS `Not Running` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status != 'Running' LIMIT MAX"
       }
     }
 
@@ -100,7 +100,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Failed' LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Failed` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Failed' LIMIT MAX"
       }
     }
 
@@ -114,7 +114,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Unknown' LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT uniqueCount(podName) OR 0 AS `Unknown` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) AND status = 'Unknown' LIMIT MAX"
       }
     }
 
@@ -129,7 +129,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
       limit = 100
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX"
       }
     }
 
@@ -144,7 +144,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
       limit = 100
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX"
+        query      = "FROM K8sPodSample SELECT filter(uniqueCount(podName), WHERE isReady = 1) / uniqueCount(podName) * 100 AS `ready (%)` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX"
       }
     }
 
@@ -158,7 +158,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -172,7 +172,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores) AS `usage`, max(cpuLimitCores) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND cpuLimitCores IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -186,7 +186,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
+        query      = "FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -200,7 +200,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND cpuLimitCores IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
+        query      = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND cpuLimitCores IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -214,7 +214,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -228,7 +228,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `usage`, max(memoryLimitBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND memoryLimitBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -242,7 +242,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
+        query      = "FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -256,7 +256,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT max(memoryUsedBytes)/max(memoryLimitBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND memoryLimitBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
+        query      = "FROM K8sContainerSample SELECT max(memoryUsedBytes)/max(memoryLimitBytes)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND memoryLimitBytes IS NOT NULL FACET containerName, podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -270,7 +270,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -284,7 +284,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -298,7 +298,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
+        query      = "FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) FACET containerName, podName TIMESERIES LIMIT 10"
       }
     }
 
@@ -312,7 +312,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
 
       nrql_query {
         account_id = var.NEW_RELIC_ACCOUNT_ID
-        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(6)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
+        query      = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `usage`, max(fsCapacityBytes) AS `limit` WHERE clusterName = '${var.cluster_name}' AND namespaceName IN ({{namespaces}}) AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE createdKind = 'StatefulSet' AND podName IN (FROM K8sPodSample SELECT uniques(podName) WHERE substring(podName, 0, length(podName)-(1)) IN ({{statefulsets}}) LIMIT MAX) LIMIT MAX) AND fsCapacityBytes IS NOT NULL FACET podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`usage`)/sum(`limit`)*100 FACET podName TIMESERIES LIMIT 10"
       }
     }
   }
@@ -320,7 +320,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
   # Namespaces
   variable {
     name  = "namespaces"
-    title = "namespaces"
+    title = "Namespaces"
     type  = "nrql"
 
     default_values       = ["*"]
@@ -336,7 +336,7 @@ resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
   # Statefulsets
   variable {
     name  = "statefulsets"
-    title = "statefulsets"
+    title = "Statefulsets"
     type  = "nrql"
 
     default_values       = ["*"]

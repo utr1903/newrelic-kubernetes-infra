@@ -320,7 +320,7 @@ resource "newrelic_one_dashboard" "kubernetes_deployment_overview" {
   # Namespaces
   variable {
     name  = "namespaces"
-    title = "namespaces"
+    title = "Namespaces"
     type  = "nrql"
 
     default_values       = ["*"]
@@ -336,7 +336,7 @@ resource "newrelic_one_dashboard" "kubernetes_deployment_overview" {
   # Deployments
   variable {
     name  = "deployments"
-    title = "deployments"
+    title = "Deployments"
     type  = "nrql"
 
     default_values       = ["*"]
