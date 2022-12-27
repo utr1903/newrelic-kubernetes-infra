@@ -4,25 +4,23 @@
 
 # Notification channel - Email
 resource "newrelic_notification_channel" "kubernetes_nodes_mem_email" {
-  count = length(local.email_targets.nodes)
+  for_each = local.emails
 
-  name       = "k8s-${var.cluster_name}-workflow-nodes-mem-email-${local.email_targets.nodes[count.index]}"
+  name       = "k8s-${var.cluster_name}-workflow-nodes-mem-email-${each.key}"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   type       = "EMAIL"
 
-  destination_id = newrelic_notification_destination.email[local.email_targets.nodes[count.index]].id
+  destination_id = newrelic_notification_destination.email[each.key].id
   product        = "IINT"
 
   property {
     key   = "subject"
-    value = "Alert - ${local.email_targets.nodes[count.index]}"
+    value = "Alert - ${each.value}"
   }
 }
 
 # Workflow
 resource "newrelic_workflow" "kubernetes_nodes_mem" {
-  count = length(local.email_targets.nodes)
-
   name       = "k8s-${var.cluster_name}-workflow-nodes-mem"
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
@@ -62,7 +60,11 @@ resource "newrelic_workflow" "kubernetes_nodes_mem" {
     }
   }
 
-  destination {
-    channel_id = newrelic_notification_channel.kubernetes_nodes_mem_email[count.index].id
+  dynamic "destination" {
+    for_each = local.emails
+
+    content {
+      channel_id = newrelic_notification_channel.kubernetes_nodes_mem_email[destination.key].id
+    }
   }
 }

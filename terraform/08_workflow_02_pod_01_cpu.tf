@@ -3,10 +3,10 @@
 ################
 
 # Notification channel - Email
-resource "newrelic_notification_channel" "kubernetes_nodes_cpu_email" {
+resource "newrelic_notification_channel" "kubernetes_pod_cpu_email" {
   for_each = local.emails
 
-  name       = "k8s-${var.cluster_name}-workflow-nodes-cpu-email-${each.key}"
+  name       = "k8s-${var.cluster_name}-workflow-pods-cpu-email-${each.key}"
   account_id = var.NEW_RELIC_ACCOUNT_ID
   type       = "EMAIL"
 
@@ -20,25 +20,25 @@ resource "newrelic_notification_channel" "kubernetes_nodes_cpu_email" {
 }
 
 # Workflow
-resource "newrelic_workflow" "kubernetes_nodes_cpu" {
-  name       = "k8s-${var.cluster_name}-workflow-nodes-cpu"
+resource "newrelic_workflow" "kubernetes_pod_cpu" {
+  name       = "k8s-${var.cluster_name}-workflow-pods-cpu"
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
   enrichments_enabled   = var.enable_enrichments
   enabled               = true
   muting_rules_handling = "NOTIFY_ALL_ISSUES"
 
-  enrichments {
-    nrql {
-      name = "Top 10 CPU using pods (mcores)"
-      configuration {
-        query = "FROM (FROM K8sContainerSample SELECT max(cpuUsedCores)*1000 AS `cpu` WHERE clusterName = '${var.cluster_name}' AND nodeName IN {{entitiesData.names}} FACET namespace, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`cpu`) TIMESERIES FACET namespace, podName LIMIT 10"
-      }
-    }
-  }
+  # enrichments {
+  #   nrql {
+  #     name = "Metric"
+  #     configuration {
+  #       query = "SELECT count(*) FROM Metric WHERE metricName = 'myMetric'"
+  #     }
+  #   }
+  # }
 
   issues_filter {
-    name = "k8s-nodes-filter"
+    name = "k8s-pods-filter"
     type = "FILTER"
 
     predicate {
@@ -50,7 +50,7 @@ resource "newrelic_workflow" "kubernetes_nodes_cpu" {
     predicate {
       attribute = "tag.k8sObjectType"
       operator  = "EXACTLY_MATCHES"
-      values    = ["node"]
+      values    = ["pod"]
     }
 
     predicate {
@@ -64,7 +64,7 @@ resource "newrelic_workflow" "kubernetes_nodes_cpu" {
     for_each = local.emails
 
     content {
-      channel_id = newrelic_notification_channel.kubernetes_nodes_cpu_email[destination.key].id
+      channel_id = newrelic_notification_channel.kubernetes_pod_cpu_email[destination.key].id
     }
   }
 }
