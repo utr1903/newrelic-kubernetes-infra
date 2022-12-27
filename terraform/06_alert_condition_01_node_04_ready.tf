@@ -23,7 +23,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_node_readiness" {
   slide_by                       = 30 // seconds
 
   nrql {
-    query = "FROM K8sNodeSample SELECT uniqueCount(nodeName) WHERE clusterName = '${var.cluster_name}' AND condition.Ready = 0"
+    query = "FROM K8sNodeSample SELECT uniqueCount(nodeName) WHERE clusterName = '${var.cluster_name}' AND condition.Ready = 0 FACET nodeName"
   }
 
   critical {
