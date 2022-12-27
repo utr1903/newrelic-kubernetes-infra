@@ -3,11 +3,10 @@
 #######################
 
 # Alert condition - CPU
-resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization" {
-  count      = length(local.alerts_deployments)
-  name       = "Namespace (${local.alerts_deployments[count.index][0]}) | Deployment (${local.alerts_deployments[count.index][1]}) | CPU"
+resource "newrelic_nrql_alert_condition" "kubernetes_pod_cpu_utilization" {
+  name       = "K8s Cluster ${var.cluster_name} | Pods | CPU"
   account_id = var.NEW_RELIC_ACCOUNT_ID
-  policy_id  = newrelic_alert_policy.kubernetes_deployment.id
+  policy_id  = newrelic_alert_policy.kubernetes_pod.id
 
   type        = "static"
   description = "Alert when CPU utilization remains too high."
@@ -24,7 +23,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
   slide_by                       = 30 // seconds
 
   nrql {
-    query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index][0]}' AND deploymentName = '${local.alerts_deployments[count.index][1]}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
+    query = "FROM K8sContainerSample SELECT max(cpuUsedCores)/max(cpuLimitCores)*100 WHERE clusterName = '${var.cluster_name}' AND cpuLimitCores IS NOT NULL FACET podName, containerName"
   }
 
   warning {
@@ -43,9 +42,8 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_cpu_utilization"
 }
 
 # Alert condition tag - CPU
-resource "newrelic_entity_tags" "kubernetes_deployment_cpu_utilization" {
-  count = length(local.alerts_deployments)
-  guid  = newrelic_nrql_alert_condition.kubernetes_deployment_cpu_utilization[count.index].entity_guid
+resource "newrelic_entity_tags" "kubernetes_pod_cpu_utilization" {
+  guid  = newrelic_nrql_alert_condition.kubernetes_pod_cpu_utilization.entity_guid
 
   tag {
     key    = "k8sClusterName"
@@ -54,21 +52,11 @@ resource "newrelic_entity_tags" "kubernetes_deployment_cpu_utilization" {
 
   tag {
     key    = "k8sObjectType"
-    values = ["deployment"]
+    values = ["pod"]
   }
 
   tag {
     key    = "alertProperty"
     values = ["cpuUtilization"]
-  }
-
-  tag {
-    key    = "namespaceName"
-    values = ["${local.alerts_deployments[count.index][0]}"]
-  }
-
-  tag {
-    key    = "deploymentName"
-    values = ["${local.alerts_deployments[count.index][1]}"]
   }
 }

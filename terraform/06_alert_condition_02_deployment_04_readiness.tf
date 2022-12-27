@@ -3,14 +3,13 @@
 #######################
 
 # Alert condition - Readiness
-resource "newrelic_nrql_alert_condition" "kubernetes_deployment_readiness" {
-  count      = length(local.alerts_deployments)
-  name       = "Namespace (${local.alerts_deployments[count.index][0]}) | Deployment (${local.alerts_deployments[count.index][1]}) | MEM"
+resource "newrelic_nrql_alert_condition" "kubernetes_pod_readiness" {
+  name       = "K8s Cluster ${var.cluster_name} | Pods | Readiness"
   account_id = var.NEW_RELIC_ACCOUNT_ID
-  policy_id  = newrelic_alert_policy.kubernetes_deployment.id
+  policy_id  = newrelic_alert_policy.kubernetes_pod.id
 
   type        = "static"
-  description = "Alert when a pod in a deployment is not ready."
+  description = "Alert when a pod is not ready."
 
   enabled                        = true
   violation_time_limit_seconds   = 3 * 24 * 60 * 60 // days calculated into seconds
@@ -24,7 +23,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_readiness" {
   slide_by                       = 30 // seconds
 
   nrql {
-    query = "FROM K8sPodSample SELECT uniqueCount(podName) WHERE clusterName = '${var.cluster_name}' AND namespaceName = '${local.alerts_deployments[count.index][0]}' AND deploymentName = '${local.alerts_deployments[count.index][1]}' AND isReady = 0"
+    query = "FROM K8sPodSample SELECT uniqueCount(podName) WHERE clusterName = '${var.cluster_name}'AND isReady = 0 FACET podName"
   }
 
   warning {
@@ -43,9 +42,8 @@ resource "newrelic_nrql_alert_condition" "kubernetes_deployment_readiness" {
 }
 
 # Alert condition tag - Readiness
-resource "newrelic_entity_tags" "kubernetes_deployment_readiness" {
-  count = length(local.alerts_deployments)
-  guid  = newrelic_nrql_alert_condition.kubernetes_deployment_readiness[count.index].entity_guid
+resource "newrelic_entity_tags" "kubernetes_pod_readiness" {
+  guid  = newrelic_nrql_alert_condition.kubernetes_pod_readiness.entity_guid
 
   tag {
     key    = "k8sClusterName"
@@ -54,21 +52,11 @@ resource "newrelic_entity_tags" "kubernetes_deployment_readiness" {
 
   tag {
     key    = "k8sObjectType"
-    values = ["deployment"]
+    values = ["pod"]
   }
 
   tag {
     key    = "alertProperty"
     values = ["readiness"]
-  }
-
-  tag {
-    key    = "namespaceName"
-    values = ["${local.alerts_deployments[count.index][0]}"]
-  }
-
-  tag {
-    key    = "deploymentName"
-    values = ["${local.alerts_deployments[count.index][1]}"]
   }
 }
