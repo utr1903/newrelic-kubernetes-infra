@@ -26,8 +26,7 @@ resource "newrelic_workflow" "kubernetes_email_namespaces" {
   name       = newrelic_notification_channel.kubernetes_email_namespaces[count.index].name
   account_id = var.NEW_RELIC_ACCOUNT_ID
 
-  # enrichments_enabled   = true
-  destinations_enabled  = true
+  enrichments_enabled   = var.enable_enrichments
   enabled               = true
   muting_rules_handling = "NOTIFY_ALL_ISSUES"
 

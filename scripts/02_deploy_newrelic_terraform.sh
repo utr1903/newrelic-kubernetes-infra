@@ -15,6 +15,10 @@ while (( "$#" )); do
       cluster="$2"
       shift
       ;;
+    --enrich)
+      enableEnrichments="true"
+      shift
+      ;;
     *)
       shift
       ;;
@@ -50,6 +54,11 @@ fi
 if [[ $cluster == "" ]]; then
   echo "Define cluster name with the flag [--cluster]. For example -> <mydopeclusterprod>"
   exit 1
+fi
+
+# Workflow enrichments
+if [[ $enableEnrichments == "" ]]; then
+  enableEnrichments="false"
 fi
 
 ##################
@@ -157,6 +166,7 @@ if [[ $flagDestroy != "true" ]]; then
     -var deployments=$deployments \
     -var daemonsets=$daemonsets \
     -var statefulsets=$statefulsets \
+    -var enable_enrichments=$enableEnrichments \
     -out "./tfplan"
 
   # Apply Terraform
@@ -185,7 +195,8 @@ else
     -var namespace_names=$namespaces \
     -var deployments=$deployments \
     -var daemonsets=$daemonsets \
-    -var statefulsets=$statefulsets
+    -var statefulsets=$statefulsets \
+    -var enable_enrichments=$enableEnrichments
 
   # Remove workspace
   terraform -chdir=../terraform workspace select "default"

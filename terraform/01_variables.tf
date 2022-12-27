@@ -25,6 +25,11 @@ variable "cluster_name" {
   type = string
 }
 
+# Workflow Enrichment
+variable "enable_enrichments" {
+  type = bool
+}
+
 # Namespace Names
 variable "namespace_names" {
   type = list(string)

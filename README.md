@@ -60,11 +60,14 @@ script with the following arguments:
 | Name         | Argument Flag |
 | -----------  | ------------- |
 | cluster name | `--cluster`   |
+| enrichment   | `--enrich`    |
 | dry run      | `--dry-run`   |
 | destroy      | `--destroy`   |
 
 - `--cluster` stands for the name of your cluster with which it will
 be seen & queried within New Relic (required)
+- `--enrich` stands for wheather you want to enable the workflow
+enrichment. Defaults to false (optional)
 - `--dry-run` stands for just running `terraform plan` and prompting
 what changes will look like (optional)
 - `--destroy` stands for deleting the Terraform resources (optional)
