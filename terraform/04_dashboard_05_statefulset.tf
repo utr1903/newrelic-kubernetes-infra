@@ -4,7 +4,7 @@
 
 # Dashboard - Kubernetes Statefulset Overview
 resource "newrelic_one_dashboard" "kubernetes_statefulset_overview" {
-  name = "K8s Cluster ${var.cluster_name} | Statefulsets"
+  name = "K8s ${var.cluster_name} | 05_Statefulsets"
 
   page {
     name = "Statefulsets"

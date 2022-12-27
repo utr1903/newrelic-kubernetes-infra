@@ -4,7 +4,7 @@
 
 # Dashboard - Kubernetes Daemonset Overview
 resource "newrelic_one_dashboard" "kubernetes_daemonset_overview" {
-  name = "K8s Cluster ${var.cluster_name} | Daemonsets"
+  name = "K8s ${var.cluster_name} | 04_Daemonsets"
 
   page {
     name = "Daemonsets"

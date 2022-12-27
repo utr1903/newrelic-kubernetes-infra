@@ -4,7 +4,7 @@
 
 # Dashboard - Kubernetes Deployment Overview
 resource "newrelic_one_dashboard" "kubernetes_deployment_overview" {
-  name = "K8s Cluster ${var.cluster_name} | Deployments"
+  name = "K8s ${var.cluster_name} | 03_Deployments"
 
   page {
     name = "Deployments"
