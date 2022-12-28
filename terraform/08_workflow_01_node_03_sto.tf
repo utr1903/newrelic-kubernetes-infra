@@ -32,7 +32,7 @@ resource "newrelic_workflow" "kubernetes_nodes_sto" {
     nrql {
       name = "Top 10 STO using pods (bytes)"
       configuration {
-        query = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND nodeName IN {{entitiesData.names}} FACET namespace, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET namespace, podName LIMIT 10"
+        query = "FROM (FROM K8sContainerSample SELECT max(fsUsedBytes) AS `sto` WHERE clusterName = '${var.cluster_name}' AND nodeName IN (FROM K8sNodeSample SELECT uniques(nodeName) WHERE entityId IN {{entitiesData.ids}} LIMIT MAX) FACET namespace, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`sto`) TIMESERIES FACET namespace, podName LIMIT 10"
       }
     }
   }

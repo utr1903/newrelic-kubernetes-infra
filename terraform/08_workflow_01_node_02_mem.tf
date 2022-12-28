@@ -32,7 +32,7 @@ resource "newrelic_workflow" "kubernetes_nodes_mem" {
     nrql {
       name = "Top 10 MEM using pods (bytes)"
       configuration {
-        query = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND nodeName IN {{entitiesData.names}} FACET namespace, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET namespace, podName LIMIT 10"
+        query = "FROM (FROM K8sContainerSample SELECT max(memoryUsedBytes) AS `mem` WHERE clusterName = '${var.cluster_name}' AND nodeName IN (FROM K8sNodeSample SELECT uniques(nodeName) WHERE entityId IN {{entitiesData.ids}} LIMIT MAX) FACET namespace, podName, containerID TIMESERIES LIMIT MAX) SELECT sum(`mem`) TIMESERIES FACET namespace, podName LIMIT 10"
       }
     }
   }
