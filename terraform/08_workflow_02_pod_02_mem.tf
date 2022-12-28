@@ -28,14 +28,14 @@ resource "newrelic_workflow" "kubernetes_pod_mem" {
   enabled               = true
   muting_rules_handling = "NOTIFY_ALL_ISSUES"
 
-  # enrichments {
-  #   nrql {
-  #     name = "Metric"
-  #     configuration {
-  #       query = "SELECT count(*) FROM Metric WHERE metricName = 'myMetric'"
-  #     }
-  #   }
-  # }
+  enrichments {
+    nrql {
+      name = "Node, namespace & pod of the problematic container"
+      configuration {
+        query = "FROM K8sContainerSample SELECT latest(nodeName), latest(namespaceName), latest(podName) WHERE entityId IN {{entitiesData.ids}} FACET containerName LIMIT MAX"
+      }
+    }
+  }
 
   issues_filter {
     name = "k8s-pods-filter"
