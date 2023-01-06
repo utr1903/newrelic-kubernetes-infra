@@ -15,6 +15,10 @@ while (( "$#" )); do
       cluster="$2"
       shift
       ;;
+    --enrich)
+      enableEnrichments="true"
+      shift
+      ;;
     *)
       shift
       ;;
@@ -52,81 +56,10 @@ if [[ $cluster == "" ]]; then
   exit 1
 fi
 
-##################
-### NAMESPACES ###
-##################
-
-# Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sPodSample SELECT uniques(namespaceName) AS `namespaces` WHERE clusterName = '"'$cluster'"' LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
-
-# Clear the additional spaces
-query=$(echo $query | sed 's/    /  /g')
-
-# Query and format the namespaces
-namespaces=$(curl https://api.eu.newrelic.com/graphql \
-  -H "Content-Type: application/json" \
-  -H "API-Key: $NEWRELIC_API_KEY" \
-  --data-binary "$query" \
-  | jq -r '.data.actor.nrql.results[0].namespaces' \
-  | tr -d '\n' | tr -d ' ')
-#########
-
-###################
-### DEPLOYMENTS ###
-###################
-
-# Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDeploymentSample SELECT uniques(deploymentName) AS `deployment_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
-
-# Clear the additional spaces
-query=$(echo $query | sed 's/    /  /g')
-
-# Query and format the namespaces
-deployments=$(curl https://api.eu.newrelic.com/graphql \
-  -H "Content-Type: application/json" \
-  -H "API-Key: $NEWRELIC_API_KEY" \
-  --data-binary "$query" \
-  | jq -r '.data.actor.nrql.results' \
-  | tr -d '\n' | tr -d ' ')
-#########
-
-##################
-### DAEMONSETS ###
-##################
-
-# Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sDaemonsetSample SELECT uniques(daemonsetName) AS `daemonset_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
-
-# Clear the additional spaces
-query=$(echo $query | sed 's/    /  /g')
-
-# Query and format the namespaces
-daemonsets=$(curl https://api.eu.newrelic.com/graphql \
-  -H "Content-Type: application/json" \
-  -H "API-Key: $NEWRELIC_API_KEY" \
-  --data-binary "$query" \
-  | jq -r '.data.actor.nrql.results' \
-  | tr -d '\n' | tr -d ' ')
-#########
-
-####################
-### STATEFULSETS ###
-####################
-
-# Set NerdGraph query
-query='{"query":"{\n  actor {\n    nrql(accounts: '$NEWRELIC_ACCOUNT_ID', async: false, query: \"FROM K8sStatefulsetSample SELECT uniques(statefulsetName) AS `statefulset_names` WHERE clusterName = '"'$cluster'"' FACET namespaceName AS `namespace_name` LIMIT MAX\") {\n      results\n    }\n  }\n}\n", "variables":""}'
-
-# Clear the additional spaces
-query=$(echo $query | sed 's/    /  /g')
-
-# Query and format the namespaces
-statefulsets=$(curl https://api.eu.newrelic.com/graphql \
-  -H "Content-Type: application/json" \
-  -H "API-Key: $NEWRELIC_API_KEY" \
-  --data-binary "$query" \
-  | jq -r '.data.actor.nrql.results' \
-  | tr -d '\n' | tr -d ' ')
-#########
+# Workflow enrichments
+if [[ $enableEnrichments == "" ]]; then
+  enableEnrichments="false"
+fi
 
 #################
 ### TERRAFORM ###
@@ -153,10 +86,7 @@ if [[ $flagDestroy != "true" ]]; then
     -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
     -var NEW_RELIC_REGION=$NEWRELIC_REGION \
     -var cluster_name=$cluster \
-    -var namespace_names=$namespaces \
-    -var deployments=$deployments \
-    -var daemonsets=$daemonsets \
-    -var statefulsets=$statefulsets \
+    -var enable_enrichments=$enableEnrichments \
     -out "./tfplan"
 
   # Apply Terraform
@@ -182,10 +112,7 @@ else
     -var NEW_RELIC_API_KEY=$NEWRELIC_API_KEY \
     -var NEW_RELIC_REGION=$NEWRELIC_REGION \
     -var cluster_name=$cluster \
-    -var namespace_names=$namespaces \
-    -var deployments=$deployments \
-    -var daemonsets=$daemonsets \
-    -var statefulsets=$statefulsets
+    -var enable_enrichments=$enableEnrichments
 
   # Remove workspace
   terraform -chdir=../terraform workspace select "default"
