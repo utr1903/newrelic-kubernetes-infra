@@ -43,7 +43,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_pod_cpu_utilization" {
 
 # Alert condition tag - CPU
 resource "newrelic_entity_tags" "kubernetes_pod_cpu_utilization" {
-  guid  = newrelic_nrql_alert_condition.kubernetes_pod_cpu_utilization.entity_guid
+  guid = newrelic_nrql_alert_condition.kubernetes_pod_cpu_utilization.entity_guid
 
   tag {
     key    = "k8sClusterName"

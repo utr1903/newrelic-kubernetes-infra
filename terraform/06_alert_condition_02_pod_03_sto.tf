@@ -43,7 +43,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_pod_sto_utilization" {
 
 # Alert condition tag - STO
 resource "newrelic_entity_tags" "kubernetes_pod_sto_utilization" {
-  guid  = newrelic_nrql_alert_condition.kubernetes_pod_sto_utilization.entity_guid
+  guid = newrelic_nrql_alert_condition.kubernetes_pod_sto_utilization.entity_guid
 
   tag {
     key    = "k8sClusterName"

@@ -43,7 +43,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_pod_readiness" {
 
 # Alert condition tag - Readiness
 resource "newrelic_entity_tags" "kubernetes_pod_readiness" {
-  guid  = newrelic_nrql_alert_condition.kubernetes_pod_readiness.entity_guid
+  guid = newrelic_nrql_alert_condition.kubernetes_pod_readiness.entity_guid
 
   tag {
     key    = "k8sClusterName"

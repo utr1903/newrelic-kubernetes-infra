@@ -43,7 +43,7 @@ resource "newrelic_nrql_alert_condition" "kubernetes_pod_mem_utilization" {
 
 # Alert condition tag - MEM
 resource "newrelic_entity_tags" "kubernetes_pod_mem_utilization" {
-  guid  = newrelic_nrql_alert_condition.kubernetes_pod_mem_utilization.entity_guid
+  guid = newrelic_nrql_alert_condition.kubernetes_pod_mem_utilization.entity_guid
 
   tag {
     key    = "k8sClusterName"
