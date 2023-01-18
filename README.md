@@ -7,9 +7,6 @@ cluster by only running 2 scripts:
 
 ## Prerequisites
 
-- sed
-- curl
-- jq
 - Helm 3.x
 - Terraform 0.13+
 
@@ -84,20 +81,6 @@ variable `NEWRELIC_REGION="xx"`.
 `NEWRELIC_API_KEY=xxx`.
    - [How to create user API key](https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/)
 
-The script will first make a couple of GraphQL queries in order to get
-- Namespaces
-- Deployments
-- DaemonSets
-- StatefulSets
-
-and will create the New Relic resources (dashboards, alerts, workflows
-etc.) accordingly.
-
-**Important:** In order to keep the monitoring stack always up-to-date,
-it is highly recommended to place this script to the end of your
-deployment pipelines as a post-deployment step. Thereby your New Relic
-resources will always update themselves regarding your latest cluster state.
-
 ### Dashboards
 
 Dashboards contain general information and resource consumption regarding
@@ -105,16 +88,20 @@ your nodes, namespaces and pods.
 
 You will have 1 dashboard
 - for your cluster
-- for each of your namespaces
-- for each of your deployments in separate namespaces
-- for each of your daemon sets in separate namespaces
-- for each of your stateful sets in separate namespaces
+- for your namespaces
+- for your deployments
+- for your daemonsets
+- for your statefulsets
 
 This way, you will be able to have many dedicated overviews for every edge of
-your cluster. You can inspect every node or namespace individually and  navigate
+your cluster. You can inspect every node or namespace individually and navigate
 through the dashboards from higher cluster level down to lower pod level. You
-can refer to the prebuilt queries within the dashboards and deep dive more to
-get the most out of your telemetry data.
+can also use of the variables within the dashboards to filter specific
+Kubernetes resources (e.g. show only `deployment-a` and `deployment-b` within
+namespaces `namespace-x` and `namespace-y`).
+
+You can refer to the prebuilt queries within the dashboards and deep dive more
+to get the most out of your telemetry data.
 
 ### Alerts
 
@@ -131,37 +118,9 @@ be aware of the excessive consumption within your cluster.
 Workflows are meant to notify you whenever the alert conditions are violated
 and cause an issue.
 Currently, only emailing is supported.
-You can adapt the
+You can set the local variable `emails` in the
 [02_locals.tf](terraform/02_locals.tf)
-file according to which teams or members you want to notify.
-
-The `target_names` variable stands as a key to the individual destinations.
-You can define the names to your corresponding destinations.
-
-The `emails` variable stands for the mapping of each `target_name` to their
-email addresses. Refer to the `target_names` variable when filling the
-this map.
-
-The `email_targets` variable stands for the workflow filtering regarding
-nodes and namespaces for notifying your destinations.
-
-- The `nodes` accepts an array where you can directly put your
-`target_names` which you want them to get notified when an issue occurs
-regarding nodes.
-- The `namespaces` accepts a map where you can assign namespaces to your
-`target_names` which you want them to get notified when an issue occurs
-regarding the namespaces you have particularly defined.
-
-### REMARK
-
-Currently (23.12.2022), there is a bug on the New Relic Terraform provider
-side which causes the following error:
-`An error occurred resolving this field: SERVER_ERROR`
-
-If you randomly face this error, you can run the Terraform deployment
-again. It will deploy all of the resources eventually. The necessary
-update will be done for this repository after the provider has fixed the
-bug.
+file according to which teams members you want to notify.
 
 ### Maintainers
 - [Ugur Turkarslan](https://github.com/utr1903)
